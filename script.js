@@ -120,6 +120,126 @@ const quizzes = [
         correctAnswer: "c"
       }
     ]
+  },
+  {
+    id: "teoria-cores",
+    title: "Teoria das Cores",
+    description: "Modelos de cor, roda cromática, harmonia e percepção visual.",
+    duration: "9 min",
+    questions: [
+      {
+        id: "q1",
+        type: "single-choice",
+        title: "Quais são as cores primárias no modelo aditivo de luz (RGB)?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "Ciano, Magenta e Amarelo" },
+          { value: "b", label: "Vermelho, Amarelo e Azul" },
+          { value: "c", label: "Vermelho, Verde e Azul" },
+          { value: "d", label: "Laranja, Verde e Violeta" }
+        ],
+        correctAnswer: "c"
+      },
+      {
+        id: "q2",
+        type: "single-choice",
+        title: "No modelo subtrativo (pigmento/impressão), quais são as cores primárias?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "Vermelho, Verde e Azul" },
+          { value: "b", label: "Vermelho, Amarelo e Azul" },
+          { value: "c", label: "Ciano, Magenta e Amarelo" },
+          { value: "d", label: "Preto, Branco e Cinza" }
+        ],
+        correctAnswer: "c"
+      },
+      {
+        id: "q3",
+        type: "single-choice",
+        title: "O que são cores complementares?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "Cores adjacentes na roda de cores" },
+          { value: "b", label: "Cores opostas na roda de cores (180°)" },
+          { value: "c", label: "Cores da mesma família cromática" },
+          { value: "d", label: "Cores com igual saturação" }
+        ],
+        correctAnswer: "b"
+      },
+      {
+        id: "q4",
+        type: "single-choice",
+        title: "O que é a saturação de uma cor?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "O grau de luminosidade ou escuridão da cor" },
+          { value: "b", label: "A temperatura percebida da cor" },
+          { value: "c", label: "A intensidade ou pureza da cor" },
+          { value: "d", label: "O ângulo da cor na roda cromática" }
+        ],
+        correctAnswer: "c"
+      },
+      {
+        id: "q5",
+        type: "single-choice",
+        title: "Qual esquema de harmonia utiliza três cores equidistantes (120°) na roda de cores?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "Análogo" },
+          { value: "b", label: "Monocromático" },
+          { value: "c", label: "Complementar" },
+          { value: "d", label: "Triádico" }
+        ],
+        correctAnswer: "d"
+      },
+      {
+        id: "q6",
+        type: "single-choice",
+        title: "No modelo HSB/HSV, o que o componente 'V' (Value/Brightness) representa?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "A pureza da cor" },
+          { value: "b", label: "O grau de luminosidade da cor" },
+          { value: "c", label: "O ângulo na roda de cores" },
+          { value: "d", label: "A temperatura da cor" }
+        ],
+        correctAnswer: "b"
+      },
+      {
+        id: "q7",
+        type: "single-choice",
+        title: "Cores análogas são aquelas que:",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "São opostas na roda de cores" },
+          { value: "b", label: "Formam um triângulo equilátero na roda" },
+          { value: "c", label: "Ficam próximas/adjacentes na roda de cores" },
+          { value: "d", label: "Têm a mesma saturação e brilho" }
+        ],
+        correctAnswer: "c"
+      },
+      {
+        id: "q8",
+        type: "single-choice",
+        title: "O que é temperatura de cor em design e fotografia?",
+        description: "Selecione apenas uma alternativa.",
+        points: 1,
+        options: [
+          { value: "a", label: "A medida de brilho em nits" },
+          { value: "b", label: "A opacidade da cor em porcentagem" },
+          { value: "c", label: "A percepção de uma cor como quente (vermelhos/amarelos) ou fria (azuis)" },
+          { value: "d", label: "O número de bits necessários para representar a cor" }
+        ],
+        correctAnswer: "c"
+      }
+    ]
   }
 ];
 
@@ -161,7 +281,9 @@ const teacherUsersList = document.getElementById("teacher-users-list");
 const teacherMessage = document.getElementById("teacher-message");
 const builderSubmitButton = document.getElementById("builder-submit-button");
 const builderForm = document.getElementById("builder-form");
-const pendingUnloadCancellationKey = "quiz_pending_unload_cancellation";
+function getPendingUnloadKey() {
+  return `quiz_pending_unload_cancellation_${state.user?.uid || "anon"}`;
+}
 const builderTitleInput = document.getElementById("builder-title");
 const builderDescriptionInput = document.getElementById("builder-description");
 const builderDurationInput = document.getElementById("builder-duration");
@@ -399,16 +521,17 @@ function normalizeNameSlug(name) {
 }
 
 function savePendingUnloadCancellation(payload) {
-  localStorage.setItem(pendingUnloadCancellationKey, JSON.stringify(payload));
+  localStorage.setItem(getPendingUnloadKey(), JSON.stringify(payload));
 }
 
 function consumePendingUnloadCancellation() {
-  const raw = localStorage.getItem(pendingUnloadCancellationKey);
+  const key = getPendingUnloadKey();
+  const raw = localStorage.getItem(key);
   if (!raw) {
     return null;
   }
 
-  localStorage.removeItem(pendingUnloadCancellationKey);
+  localStorage.removeItem(key);
   try {
     return JSON.parse(raw);
   } catch {
@@ -463,7 +586,9 @@ function flushPendingUnloadCancellation() {
 }
 
 function getAllQuizzes() {
-  return [...quizzes, ...state.customQuizzes];
+  const customIds = new Set(state.customQuizzes.map((q) => q.id));
+  const base = quizzes.filter((q) => !customIds.has(q.id));
+  return [...base, ...state.customQuizzes];
 }
 
 function shuffleArray(list) {
@@ -1124,7 +1249,7 @@ function resetBuilderForm() {
 }
 
 function startEditingQuiz(quizId) {
-  const quiz = state.customQuizzes.find((item) => item.id === quizId);
+  const quiz = getAllQuizzes().find((item) => item.id === quizId);
   if (!quiz || !builderQuestions) {
     return;
   }
@@ -1407,7 +1532,7 @@ function renderHome() {
         <button class="btn btn-primary" data-quiz="${quiz.id}">
           ${attempt ? "Ver detalhes" : "Abrir quiz"}
         </button>
-        ${state.isTeacher && quiz.isCustom ? `<button class="btn btn-ghost" data-edit-quiz="${quiz.id}">Editar quiz</button>` : ""}
+        ${state.isTeacher ? `<button class="btn btn-ghost" data-edit-quiz="${quiz.id}">Editar quiz</button>` : ""}
         ${state.isTeacher && quiz.isCustom ? `<button class="btn btn-danger-soft" data-remove-quiz="${quiz.id}">Remover quiz</button>` : ""}
       </div>
     `;
