@@ -1,1 +1,0 @@
-window.__APP_FIREBASE_API_KEY__ = "SUA_CHAVE_REAL_AQUI";
