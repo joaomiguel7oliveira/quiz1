@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Central de Quizzes</title>
+  <title>Avaliações LABDG</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
@@ -20,7 +20,7 @@
   <main class="app-shell">
     <header class="app-header">
       <div>
-        <h1>Central de Quizzes</h1>
+        <h1>Avaliações LABDG</h1>
         <p>Escolha uma atividade, acompanhe seu progresso e veja seus resultados.</p>
       </div>
       <div class="header-actions">
@@ -46,7 +46,7 @@
       <h2 id="profile-screen-title">Primeiro acesso</h2>
       <p id="profile-screen-subtitle">Antes de continuar, informe o nome que será usado em todos os quizzes.</p>
       <form id="profile-form" class="form-grid" autocomplete="off">
-        <label for="profile-name">Seu nome completo</label>
+        <label for="profile-name">Seu nome e sobrenome</label>
         <input type="text" id="profile-name" maxlength="80" required placeholder="Ex.: Maria Silva" />
         <button type="submit" class="btn btn-primary" id="profile-submit-button">Salvar e continuar</button>
         <button type="button" class="btn btn-ghost hidden" id="profile-cancel-button">Cancelar</button>
@@ -54,14 +54,15 @@
       <p id="profile-message" class="auth-message"></p>
     </section>
 
-    <section id="home-screen" class="hidden">
-      <section class="card stats-grid" id="stats-grid"></section>
 
-      <section class="card home-tools">
+    <section id="home-screen" class="hidden">
+      <section class="card stats-grid" id="stats-grid">
+        <!-- Estatísticas são renderizadas dinamicamente aqui -->
+      </section>
+      <div class="search-box-inline">
         <label for="quiz-search">Buscar quiz</label>
         <input id="quiz-search" type="text" placeholder="Digite título ou tema..." autocomplete="off" />
-      </section>
-
+      </div>
       <section class="quiz-grid" id="quiz-grid"></section>
     </section>
 

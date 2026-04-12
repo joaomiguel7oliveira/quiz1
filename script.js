@@ -505,17 +505,26 @@ async function consumeRetakeRelease(quizId) {
 
 async function gradeQuizAttemptSecure(quiz, answersSnapshot, at) {
   if (!window.firebaseHttpsCallable || !window.firebaseFunctions) {
-    throw new Error("Firebase Functions não está disponível.");
+    const error = new Error("Firebase Functions não está disponível.");
+    error.code = "functions/unavailable";
+    throw error;
   }
 
   const callable = window.firebaseHttpsCallable(window.firebaseFunctions, "gradeQuizAttempt");
-  const response = await callable({
-    quizId: quiz.id,
-    studentName: state.studentName,
-    profileSlug: state.profileSlug,
-    date: at,
-    answers: answersSnapshot || {}
-  });
+  let response;
+  try {
+    response = await callable({
+      quizId: quiz.id,
+      studentName: state.studentName,
+      profileSlug: state.profileSlug,
+      date: at,
+      answers: answersSnapshot || {}
+    });
+  } catch (rawError) {
+    const error = rawError || new Error("Falha ao chamar função de correção.");
+    error.code = rawError?.code || rawError?.details?.code || "functions/unknown";
+    throw error;
+  }
 
   const data = response?.data || {};
   if (!data || !data.result) {
@@ -526,6 +535,35 @@ async function gradeQuizAttemptSecure(quiz, answersSnapshot, at) {
     result: data.result,
     questionResults: Array.isArray(data.questionResults) ? data.questionResults : []
   };
+}
+
+function getSecureGradingErrorMessage(error) {
+  const code = String(error?.code || "").toLowerCase();
+  if (code.includes("unauthenticated")) {
+    return "Sua sessão expirou. Entre novamente com Google e tente de novo.";
+  }
+  if (code.includes("not-found")) {
+    return "Este quiz não foi encontrado no servidor. Atualize a página e tente novamente.";
+  }
+  if (code.includes("failed-precondition")) {
+    return "Este quiz está sem gabarito no servidor. Peça ao professor para revisar o cadastro.";
+  }
+  if (code.includes("permission-denied")) {
+    return "Sem permissão para concluir esta operação no momento.";
+  }
+  if (code.includes("unavailable") || code.includes("deadline-exceeded") || code.includes("internal")) {
+    return "Serviço de correção indisponível agora. Se persistir, verifique se Cloud Functions está ativa no projeto Firebase.";
+  }
+  return "Não foi possível corrigir e salvar seu resultado agora. Verifique sua conexão e tente novamente em instantes.";
+}
+
+function getLocalGradingErrorMessage(error) {
+  const code = String(error?.code || "").toLowerCase();
+  if (code.includes("local-grading/missing-key")) {
+    return "Este quiz ainda não foi atualizado para correção local no plano Spark. Peça ao professor para abrir e salvar o quiz novamente no Criador de quiz.";
+  }
+
+  return "Não foi possível corrigir localmente este quiz no momento.";
 }
 
 async function getQuizAnswerKeySecure(quizId) {
@@ -578,6 +616,121 @@ function buildShuffledQuestionSet(quiz) {
   return shuffleArray(shuffledQuestions);
 }
 
+function buildAnswerToken(quizId, questionId, answerValue) {
+  const cleanQuizId = String(quizId || "quiz");
+  const cleanQuestionId = String(questionId || "q1");
+  const cleanAnswerValue = String(answerValue || "");
+  if (!cleanAnswerValue) {
+    return "";
+  }
+
+  const plain = `${cleanAnswerValue}::${cleanQuestionId}::${cleanQuizId}`;
+  const key = `${cleanQuizId}|${cleanQuestionId}|obf_v1`;
+  const bytes = [];
+  for (let i = 0; i < plain.length; i += 1) {
+    bytes.push(plain.charCodeAt(i) ^ key.charCodeAt(i % key.length));
+  }
+  return btoa(String.fromCharCode(...bytes));
+}
+
+function decodeAnswerToken(quizId, questionId, token) {
+  const cleanToken = String(token || "");
+  if (!cleanToken) {
+    return "";
+  }
+
+  try {
+    const cleanQuizId = String(quizId || "quiz");
+    const cleanQuestionId = String(questionId || "q1");
+    const key = `${cleanQuizId}|${cleanQuestionId}|obf_v1`;
+    const encoded = atob(cleanToken);
+    const chars = [];
+    for (let i = 0; i < encoded.length; i += 1) {
+      chars.push(String.fromCharCode(encoded.charCodeAt(i) ^ key.charCodeAt(i % key.length)));
+    }
+
+    const [answerValue, decodedQuestionId, decodedQuizId] = chars.join("").split("::");
+    if (decodedQuestionId !== cleanQuestionId || decodedQuizId !== cleanQuizId) {
+      return "";
+    }
+
+    return String(answerValue || "");
+  } catch (error) {
+    console.error("Falha ao decodificar token de resposta:", error);
+    return "";
+  }
+}
+
+function resolveQuestionCorrectValue(quizId, question, index) {
+  const questionId = String(question?.id || `q${index + 1}`);
+  const byToken = decodeAnswerToken(quizId, questionId, question?.answerToken);
+  if (byToken) {
+    return byToken;
+  }
+
+  return String(question?.correctAnswer || "");
+}
+
+function gradeQuizAttemptObfuscated(quiz, answersSnapshot, at) {
+  const activeQuestions = state.activeQuestions.length ? state.activeQuestions : quiz.questions;
+  let earnedPoints = 0;
+  let maxPoints = 0;
+  let foundAnyKey = false;
+
+  const questionResults = activeQuestions.map((question, index) => {
+    const questionId = String(question?.id || `q${index + 1}`);
+    const selectedValue = String(answersSnapshot?.[questionId] || "");
+    const correctValue = resolveQuestionCorrectValue(quiz.id, question, index);
+    if (correctValue) {
+      foundAnyKey = true;
+    }
+
+    const points = Number(question?.points || 1);
+    const normalizedPoints = Number.isFinite(points) && points > 0 ? points : 1;
+    maxPoints += normalizedPoints;
+
+    const options = Array.isArray(question?.options) ? question.options : [];
+    const selectedOption = options.find((option) => String(option.value) === selectedValue);
+    const correctOption = options.find((option) => String(option.value) === correctValue);
+
+    const isCorrect = Boolean(selectedValue) && Boolean(correctValue) && selectedValue === correctValue;
+    if (isCorrect) {
+      earnedPoints += normalizedPoints;
+    }
+
+    return {
+      questionId,
+      questionTitle: question?.title || `Questão ${index + 1}`,
+      selectedValue,
+      selectedLabel: selectedOption ? String(selectedOption.label || "") : "",
+      correctValue,
+      correctLabel: correctOption ? String(correctOption.label || "") : "",
+      isCorrect
+    };
+  });
+
+  if (!foundAnyKey) {
+    const err = new Error("Quiz sem token de resposta para correção local.");
+    err.code = "local-grading/missing-key";
+    throw err;
+  }
+
+  const percent = maxPoints > 0 ? Math.round((earnedPoints / maxPoints) * 100) : 0;
+  return {
+    result: {
+      quizId: quiz.id,
+      quizTitle: quiz.title,
+      studentName: state.studentName,
+      earnedPoints,
+      maxPoints,
+      percent,
+      date: at,
+      questionResults
+    },
+    questionResults
+  };
+}
+
 function normalizeCustomQuiz(rawQuiz, docId) {
   if (!rawQuiz || !Array.isArray(rawQuiz.questions)) {
     return null;
@@ -613,7 +766,8 @@ function normalizeCustomQuiz(rawQuiz, docId) {
         description: question.description || "Selecione apenas uma alternativa.",
         points: Number(question.points || 1),
         timer: Number(question.timer || 0),
-        options
+        options,
+        answerToken: String(question.answerToken || "")
       };
     })
     .filter(Boolean);
@@ -1127,7 +1281,7 @@ function openTeacherAttemptReview(attempt) {
   }
 
   state.reviewBackScreen = "teacher";
-  reviewSummaryMeta.textContent = `${attempt.pontos ?? 0} / ${attempt.total ?? quiz.questions.length} pontos �?� ${attempt.percentual ?? 0}% de acertos`;
+  reviewSummaryMeta.textContent = `${attempt.pontos ?? 0} / ${attempt.total ?? quiz.questions.length} pontos • ${attempt.percentual ?? 0}% de acertos`;
 
   const questionResults = Array.isArray(attempt.correcaoQuestoes) ? attempt.correcaoQuestoes : [];
   if (questionResults.length > 0) {
@@ -1148,7 +1302,7 @@ function openTeacherAttemptReview(attempt) {
       `;
     }).join("");
   } else {
-    reviewList.innerHTML = `<article class="builder-question-card review-card review-card-blank"><p>Resumo detalhado indisponível para esta tentativa antiga.</p></article>`;
+    reviewList.innerHTML = `<article class="builder-question-card review-card review-card-blank"><p>Este registro é antigo e não possui detalhamento por questão. Novas tentativas mostrarão o resumo completo.</p></article>`;
   }
 
   showOnlyScreen("review");
@@ -1429,9 +1583,10 @@ async function startEditingQuiz(quizId) {
   builderQuestions.innerHTML = "";
   (quiz.questions || []).forEach((question, index) => {
     const questionId = question.id || `q${index + 1}`;
+    const decodedAnswer = decodeAnswerToken(quiz.id, questionId, question.answerToken);
     addBuilderQuestionCard({
       ...question,
-      correctAnswer: String(answerKey[questionId] || "")
+      correctAnswer: String(answerKey[questionId] || decodedAnswer || "")
     });
   });
   if (builderSubmitButton) {
@@ -1477,17 +1632,20 @@ function buildQuestionsFromBuilder() {
       return { error: "Cada questão precisa de pelo menos 2 alternativas preenchidas e uma correta marcada." };
     }
 
+    const questionId = `q${questions.length + 1}`;
+
     questions.push({
-      id: `q${questions.length + 1}`,
+      id: questionId,
       type: "single-choice",
       title,
       description: description || "Selecione apenas uma alternativa.",
       points: Number.isFinite(points) && points > 0 ? points : 1,
       options,
-      timer: Number.isFinite(timer) && timer > 0 ? timer : 0
+      timer: Number.isFinite(timer) && timer > 0 ? timer : 0,
+      _correctAnswer: correctAnswer
     });
 
-    answerKey[`q${questions.length}`] = correctAnswer;
+    answerKey[questionId] = correctAnswer;
   }
 
   if (questions.length === 0) {
@@ -1548,11 +1706,27 @@ async function handleBuilderCreateQuiz(event) {
 
   const slugBase = normalizeNameSlug(title);
   const quizId = state.editingQuizId || `custom-${slugBase}-${Date.now()}`;
+  const questionsWithTokens = built.questions.map((question, index) => {
+    const questionId = String(question.id || `q${index + 1}`);
+    const correctAnswer = String(question._correctAnswer || "");
+
+    return {
+      id: questionId,
+      type: "single-choice",
+      title: question.title,
+      description: question.description,
+      points: question.points,
+      options: question.options,
+      timer: question.timer,
+      answerToken: buildAnswerToken(quizId, questionId, correctAnswer)
+    };
+  });
+
   const payload = {
     title,
     description,
     duration,
-    questions: built.questions,
+    questions: questionsWithTokens,
     ativo: true,
     criadoPorUid: state.user?.uid || "",
     criadoPorEmail: state.user?.email || "",
@@ -1629,18 +1803,18 @@ function cloneAnswersSnapshot() {
 }
 
 function buildAttemptResult(quiz, answersSnapshot = cloneAnswersSnapshot(), at = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })) {
-  const previousAnswers = state.answers;
-  state.answers = answersSnapshot;
-  const { earnedPoints, maxPoints, percent } = evaluateQuiz(quiz);
-  state.answers = previousAnswers;
+  const maxPoints = (quiz.questions || []).reduce((sum, question) => {
+    const points = Number(question?.points || 1);
+    return sum + (Number.isFinite(points) && points > 0 ? points : 1);
+  }, 0);
 
   return {
     quizId: quiz.id,
     quizTitle: quiz.title,
     studentName: state.studentName,
-    earnedPoints,
+    earnedPoints: 0,
     maxPoints,
-    percent,
+    percent: 0,
     date: at
   };
 }
@@ -1673,7 +1847,7 @@ function openReviewScreen(backScreen = "result") {
   }
 
   state.reviewBackScreen = backScreen;
-  reviewSummaryMeta.textContent = `${attempt.result.earnedPoints} / ${attempt.result.maxPoints} pontos �?� ${attempt.result.percent}% de acertos`;
+  reviewSummaryMeta.textContent = `${attempt.result.earnedPoints} / ${attempt.result.maxPoints} pontos • ${attempt.result.percent}% de acertos`;
 
   const questionResults = attempt?.questionResults || attempt?.result?.questionResults || [];
   if (questionResults.length > 0) {
@@ -1694,7 +1868,7 @@ function openReviewScreen(backScreen = "result") {
       `;
     }).join("");
   } else {
-    reviewList.innerHTML = `<article class="builder-question-card review-card review-card-blank"><p>Resumo detalhado indisponível para esta tentativa antiga.</p></article>`;
+    reviewList.innerHTML = `<article class="builder-question-card review-card review-card-blank"><p>Este registro é antigo e não possui detalhamento por questão. Novas tentativas mostrarão o resumo completo.</p></article>`;
   }
 
   showOnlyScreen("review");
@@ -2352,27 +2526,36 @@ function handleNextQuestion() {
   advanceQuestion();
 }
 
-function evaluateQuiz(quiz) {
-  let earnedPoints = 0;
-  let maxPoints = 0;
-  const activeQuestions = state.activeQuestions.length ? state.activeQuestions : quiz.questions;
-
-  activeQuestions.forEach((question) => {
-    const points = question.points || 1;
-    maxPoints += points;
-    if (state.answers[question.id] === question.correctAnswer) {
-      earnedPoints += points;
-    }
-  });
-
-  const percent = maxPoints > 0 ? Math.round((earnedPoints / maxPoints) * 100) : 0;
-  return { earnedPoints, maxPoints, percent };
-}
-
 async function finishQuiz() {
   const quiz = getSelectedQuiz();
   if (!quiz) {
     return;
+  }
+
+  const answersSnapshot = cloneAnswersSnapshot();
+  const at = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+
+  let result;
+  let questionResults = [];
+  let shouldPersistLocalFallback = false;
+  try {
+    const graded = await gradeQuizAttemptSecure(quiz, answersSnapshot, at);
+    result = graded.result;
+    questionResults = graded.questionResults;
+  } catch (error) {
+    console.error("Correção segura indisponível. Usando correção local ofuscada:", error);
+    try {
+      const local = gradeQuizAttemptObfuscated(quiz, answersSnapshot, at);
+      result = local.result;
+      questionResults = local.questionResults;
+      shouldPersistLocalFallback = true;
+    } catch (localError) {
+      console.error("Falha também na correção local ofuscada:", localError);
+      const secureMessage = getSecureGradingErrorMessage(error);
+      const localMessage = getLocalGradingErrorMessage(localError);
+      alert(`${localMessage}\n\nDetalhe técnico: ${secureMessage}`);
+      return;
+    }
   }
 
   state.isActive = false;
@@ -2381,32 +2564,6 @@ async function finishQuiz() {
   clearQuestionTimerState();
   clearViolationTimers();
   hidePolicyWarning();
-
-  const answersSnapshot = cloneAnswersSnapshot();
-  const at = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
-
-  let result;
-  let questionResults = [];
-  let usedSecureGrading = false;
-  try {
-    const graded = await gradeQuizAttemptSecure(quiz, answersSnapshot, at);
-    result = graded.result;
-    questionResults = graded.questionResults;
-    usedSecureGrading = true;
-  } catch (error) {
-    console.error("Correção segura indisponível, usando fallback local:", error);
-    const fallback = evaluateQuiz(quiz);
-    result = {
-      quizId: quiz.id,
-      quizTitle: quiz.title,
-      studentName: state.studentName,
-      earnedPoints: fallback.earnedPoints,
-      maxPoints: fallback.maxPoints,
-      percent: fallback.percent,
-      date: at,
-      questionResults: []
-    };
-  }
 
   result.questionResults = questionResults;
 
@@ -2417,9 +2574,10 @@ async function finishQuiz() {
     questionResults
   });
 
-  if (!usedSecureGrading) {
+  if (shouldPersistLocalFallback) {
     saveAttemptToFirestore(quiz, result, answersSnapshot, questionResults);
   }
+
   const baseMessage = result.earnedPoints === result.maxPoints
     ? "Parabéns, você gabaritou todas as questões!"
     : "Resultado registrado com sucesso.";
