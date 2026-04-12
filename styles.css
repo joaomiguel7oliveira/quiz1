@@ -14,6 +14,9 @@
     --mask-solid-stop: 38%;
     --mask-fade-mid: 62%;
     --mask-fade-soft: 84%;
+    --placeholder-color: #767e8a;
+    --placeholder-color-secondary: #b0bac8;
+    --placeholder-opacity: 0.3;
 }
 
 * {
@@ -83,6 +86,13 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.user-chip:hover {
+    background: #d4f0e7;
+    border-color: #7ec9b4;
 }
 
 .card {
@@ -327,15 +337,66 @@ input[type="text"]:focus {
     opacity: 1;
 }
 
-.answers-list.masked .answer-option span {
+.answer-option-content {
     position: relative;
-    display: inline-block;
+    flex: 1;
+    min-width: 0;
+}
+
+.answer-placeholders {
+    display: none;
+}
+
+.answers-list.masked .answer-placeholders {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    max-width: 74%;
+    pointer-events: none;
+    transition: opacity 0.12s;
+    opacity: var(--placeholder-opacity);
+}
+
+.answers-list.masked .answer-option:hover .answer-placeholders {
+    opacity: 0;
+}
+
+.answer-placeholder-block {
+    display: block;
+    height: 0.52em;
+    border-radius: 3px;
+    background: var(--placeholder-color);
+}
+
+.answer-placeholder-block-secondary {
+    background: var(--placeholder-color);
+}
+
+.answers-list .answer-option.selected {
+    border-color: #a8c6b2;
+    background: #f4faf6;
+}
+
+.answers-list .answer-option.selected .answer-placeholder-block,
+.answers-list .answer-option.selected .answer-placeholder-block-secondary {
+    background: #9fb7a5;
+}
+
+.answers-list.masked .answer-text {
+    position: relative;
+    display: block;
     color: transparent;
     user-select: none;
     transition: none;
 }
 
-.answers-list.masked .answer-option span::after {
+.answers-list.masked .answer-text::after {
     content: attr(data-label);
     position: absolute;
     top: 0;
@@ -346,12 +407,29 @@ input[type="text"]:focus {
     height: 100%;
     display: inline-block;
     background: transparent;
-    -webkit-mask-image: radial-gradient(circle var(--mask-radius) at var(--reveal-x, -9999px) var(--reveal-y, -9999px), rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) var(--mask-solid-stop), rgba(0, 0, 0, 0.7) var(--mask-fade-mid), rgba(0, 0, 0, 0.22) var(--mask-fade-soft), rgba(0, 0, 0, 0) 100%);
-    mask-image: radial-gradient(circle var(--mask-radius) at var(--reveal-x, -9999px) var(--reveal-y, -9999px), rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) var(--mask-solid-stop), rgba(0, 0, 0, 0.7) var(--mask-fade-mid), rgba(0, 0, 0, 0.22) var(--mask-fade-soft), rgba(0, 0, 0, 0) 100%);
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    transition: -webkit-mask-position 0.08s linear, mask-position 0.08s linear;
-    transition: mask-position 0.08s linear, -webkit-mask-position 0.08s linear;
+    opacity: 0;
+    transition: opacity 0.12s ease;
+}
+
+/* opacidade questão */
+.answers-list.masked .answer-option:hover .answer-text::after {
+    opacity: 1;
+}
+
+/* Selected answer text turns light green */
+.answers-list .answer-option.selected .answer-text::after {
+    color: #a3bda3;
+    opacity: 0;
+}
+
+/* Also when masked (reveal through mask) verde */
+.answers-list.masked .answer-option.selected .answer-text::after {
+    color: #a3bda3;
+    opacity: 0;
+}
+
+.answers-list.masked .answer-option.selected:hover .answer-placeholders {
+    opacity: var(--placeholder-opacity);
 }
 
 .answers-list.masked .answer-option:hover {
@@ -362,7 +440,11 @@ input[type="text"]:focus {
     pointer-events: none;
 }
 
-.answers-list.question-timeout-locked .answer-option span::after {
+.answers-list.question-timeout-locked .answer-text::after {
+    display: none;
+}
+
+.answers-list.question-timeout-locked .answer-placeholders {
     display: none;
 }
 
@@ -673,6 +755,47 @@ input[type="text"]:focus {
     font-weight: 700;
 }
 
+.builder-checkbox-field {
+    align-content: start;
+}
+
+.builder-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: #fff;
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.builder-checkbox-row input {
+    width: auto;
+    margin: 0;
+}
+
+.review-card p {
+    margin: 0;
+}
+
+.review-card-correct {
+    border-color: #bfd8c8;
+    background: #f6fbf8;
+}
+
+.review-card-wrong {
+    border-color: #efcbc4;
+    background: #fff7f5;
+}
+
+.review-card-blank {
+    border-color: #d8d2c7;
+    background: #fbf9f5;
+}
+
 .builder-question-timer,
 #builder-duration {
     border: 1px solid #cfbe9f;
@@ -713,6 +836,57 @@ input[type="text"]:focus {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+}
+
+.quiz-card-actions .btn-sm {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+}
+
+/* Icon button group (edit / remove) */
+.icon-group {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 6px;
+    border-radius: 10px;
+}
+
+.btn-icon svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    color: inherit;
+}
+
+/* Make sure icon buttons are visually compact on small screens */
+@media (max-width: 560px) {
+    .icon-group {
+        justify-content: flex-end;
+    }
+}
+
+.quiz-review-note {
+    margin: 2px 0 0;
+    color: #7a6144;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.result-blocked-note {
+    margin: 18px 0 0;
+    color: #7a6144;
+    font-size: 0.9rem;
+    font-weight: 700;
 }
 
 .btn-danger-soft {
@@ -759,6 +933,10 @@ input[type="text"]:focus {
     font-size: 0.92rem;
 }
 
+.teacher-table td .btn+.btn {
+    margin-left: 6px;
+}
+
 .teacher-table th {
     color: var(--ink-soft);
     font-weight: 700;
@@ -796,6 +974,18 @@ input[type="text"]:focus {
 .btn-ghost {
     background: #f3ead7;
     color: var(--ink);
+}
+
+/* disabled gray review button style */
+.btn-disabled-gray {
+    background: #efefef;
+    color: #6b6b6b;
+    border: 1px solid #e3e3e3;
+    cursor: default;
+    opacity: 0.95;
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 700;
 }
 
 .btn-google {
@@ -912,4 +1102,14 @@ input[type="text"]:focus {
         width: 100%;
         min-width: 100%;
     }
+}
+
+.result-retake-note {
+    margin: 14px 0 0;
+    color: #1a6347;
+    font-size: 0.9rem;
+    font-weight: 700;
+    background: #e6f4ee;
+    border-radius: 8px;
+    padding: 10px 14px;
 }

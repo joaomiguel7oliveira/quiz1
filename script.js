@@ -1,255 +1,12 @@
-const quizzes = [
-  {
-    id: "redes-web",
-    title: "Redes e Web",
-    description: "Camadas OSI, HTML e lógica de programação.",
-    duration: "8 min",
-    questions: [
-      {
-        id: "q1",
-        type: "single-choice",
-        title: "Qual camada do modelo OSI é responsável pelo roteamento?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Aplicação" },
-          { value: "b", label: "Rede" },
-          { value: "c", label: "Enlace" },
-          { value: "d", label: "Física" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q2",
-        type: "single-choice",
-        title: "Em HTML, qual tag representa o título principal da página?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "<header>" },
-          { value: "b", label: "<h6>" },
-          { value: "c", label: "<h1>" },
-          { value: "d", label: "<title>" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q3",
-        type: "single-choice",
-        title: "Qual estrutura repete um bloco enquanto a condição é verdadeira, em JavaScript?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "if" },
-          { value: "b", label: "switch" },
-          { value: "c", label: "while" },
-          { value: "d", label: "const" }
-        ],
-        correctAnswer: "c"
-      }
-    ]
-  },
-  {
-    id: "seguranca-digital",
-    title: "Segurança Digital",
-    description: "Boas práticas de senhas, phishing e autenticação.",
-    duration: "6 min",
-    questions: [
-      {
-        id: "q1",
-        type: "single-choice",
-        title: "Qual opção é um exemplo de autenticação em dois fatores?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Somente senha" },
-          { value: "b", label: "Senha e código no celular" },
-          { value: "c", label: "Apenas biometria" },
-          { value: "d", label: "Apenas e-mail" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q2",
-        type: "single-choice",
-        title: "Qual destas atitudes ajuda a evitar phishing?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Clicar em qualquer link recebido" },
-          { value: "b", label: "Ignorar o endereço do remetente" },
-          { value: "c", label: "Verificar domínio e origem da mensagem" },
-          { value: "d", label: "Compartilhar senha por chat" }
-        ],
-        correctAnswer: "c"
-      }
-    ]
-  },
-  {
-    id: "logica",
-    title: "Lógica de Programação",
-    description: "Condições, repetições e operadores.",
-    duration: "7 min",
-    questions: [
-      {
-        id: "q1",
-        type: "single-choice",
-        title: "Qual operador representa igualdade estrita em JavaScript?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "=" },
-          { value: "b", label: "==" },
-          { value: "c", label: "===" },
-          { value: "d", label: "!=" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q2",
-        type: "single-choice",
-        title: "Qual laço executa ao menos uma vez, mesmo com condição falsa?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "while" },
-          { value: "b", label: "for" },
-          { value: "c", label: "do...while" },
-          { value: "d", label: "if" }
-        ],
-        correctAnswer: "c"
-      }
-    ]
-  },
-  {
-    id: "teoria-cores",
-    title: "Teoria das Cores",
-    description: "Modelos de cor, roda cromática, harmonia e percepção visual.",
-    duration: "9 min",
-    questions: [
-      {
-        id: "q1",
-        type: "single-choice",
-        title: "Quais são as cores primárias no modelo aditivo de luz (RGB)?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Ciano, Magenta e Amarelo" },
-          { value: "b", label: "Vermelho, Amarelo e Azul" },
-          { value: "c", label: "Vermelho, Verde e Azul" },
-          { value: "d", label: "Laranja, Verde e Violeta" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q2",
-        type: "single-choice",
-        title: "No modelo subtrativo (pigmento/impressão), quais são as cores primárias?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Vermelho, Verde e Azul" },
-          { value: "b", label: "Vermelho, Amarelo e Azul" },
-          { value: "c", label: "Ciano, Magenta e Amarelo" },
-          { value: "d", label: "Preto, Branco e Cinza" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q3",
-        type: "single-choice",
-        title: "O que são cores complementares?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Cores adjacentes na roda de cores" },
-          { value: "b", label: "Cores opostas na roda de cores (180°)" },
-          { value: "c", label: "Cores da mesma família cromática" },
-          { value: "d", label: "Cores com igual saturação" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q4",
-        type: "single-choice",
-        title: "O que é a saturação de uma cor?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "O grau de luminosidade ou escuridão da cor" },
-          { value: "b", label: "A temperatura percebida da cor" },
-          { value: "c", label: "A intensidade ou pureza da cor" },
-          { value: "d", label: "O ângulo da cor na roda cromática" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q5",
-        type: "single-choice",
-        title: "Qual esquema de harmonia utiliza três cores equidistantes (120°) na roda de cores?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "Análogo" },
-          { value: "b", label: "Monocromático" },
-          { value: "c", label: "Complementar" },
-          { value: "d", label: "Triádico" }
-        ],
-        correctAnswer: "d"
-      },
-      {
-        id: "q6",
-        type: "single-choice",
-        title: "No modelo HSB/HSV, o que o componente 'V' (Value/Brightness) representa?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "A pureza da cor" },
-          { value: "b", label: "O grau de luminosidade da cor" },
-          { value: "c", label: "O ângulo na roda de cores" },
-          { value: "d", label: "A temperatura da cor" }
-        ],
-        correctAnswer: "b"
-      },
-      {
-        id: "q7",
-        type: "single-choice",
-        title: "Cores análogas são aquelas que:",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "São opostas na roda de cores" },
-          { value: "b", label: "Formam um triângulo equilátero na roda" },
-          { value: "c", label: "Ficam próximas/adjacentes na roda de cores" },
-          { value: "d", label: "Têm a mesma saturação e brilho" }
-        ],
-        correctAnswer: "c"
-      },
-      {
-        id: "q8",
-        type: "single-choice",
-        title: "O que é temperatura de cor em design e fotografia?",
-        description: "Selecione apenas uma alternativa.",
-        points: 1,
-        options: [
-          { value: "a", label: "A medida de brilho em nits" },
-          { value: "b", label: "A opacidade da cor em porcentagem" },
-          { value: "c", label: "A percepção de uma cor como quente (vermelhos/amarelos) ou fria (azuis)" },
-          { value: "d", label: "O número de bits necessários para representar a cor" }
-        ],
-        correctAnswer: "c"
-      }
-    ]
-  }
-];
-
 const state = {
   user: null,
   isTeacher: false,
   profileSlug: "",
   customQuizzes: [],
+  quizConfigs: {},
   remoteAttemptsByQuiz: {},
   remoteAttemptsLoaded: false,
+  retakeReleases: {},
   selectedQuizId: null,
   activeQuestions: [],
   studentName: "",
@@ -259,6 +16,8 @@ const state = {
   isCancelled: false,
   timedOutQuestionId: null,
   editingQuizId: null,
+  isRenamingProfile: false,
+  reviewBackScreen: "result",
   violationCount: 0,
   isViolationGraceActive: false,
   violationTimeoutId: null,
@@ -294,6 +53,10 @@ const logoutButton = document.getElementById("logout-button");
 const authGoogleBtn = document.getElementById("auth-google");
 const authMessage = document.getElementById("auth-message");
 const profileScreen = document.getElementById("profile-screen");
+const profileScreenTitle = document.getElementById("profile-screen-title");
+const profileScreenSubtitle = document.getElementById("profile-screen-subtitle");
+const profileSubmitButton = document.getElementById("profile-submit-button");
+const profileCancelButton = document.getElementById("profile-cancel-button");
 const profileForm = document.getElementById("profile-form");
 const profileNameInput = document.getElementById("profile-name");
 const profileMessage = document.getElementById("profile-message");
@@ -303,6 +66,7 @@ const screens = {
   quiz: document.getElementById("quiz-screen"),
   cancel: document.getElementById("cancel-screen"),
   result: document.getElementById("result-screen"),
+  review: document.getElementById("review-screen"),
   builder: document.getElementById("builder-screen")
 };
 
@@ -328,6 +92,7 @@ const policyCountdown = document.getElementById("policy-countdown");
 const policyChancesText = document.getElementById("policy-chances-text");
 const policyReturnButton = document.getElementById("policy-return-button");
 const nextButton = document.getElementById("next-button");
+const clearAnswerButton = document.getElementById("clear-answer-button");
 const cancelButton = document.getElementById("cancel-button");
 const cancelModal = document.getElementById("cancel-modal");
 const cancelModalTitle = document.getElementById("cancel-modal-title");
@@ -336,17 +101,48 @@ const cancelModalConfirm = document.getElementById("cancel-modal-confirm");
 const cancelModalCancel = document.getElementById("cancel-modal-cancel");
 const cancelMessage = document.getElementById("cancel-message");
 const cancelBackHomeButton = document.getElementById("cancel-back-home-button");
+const cancelReviewButton = document.getElementById("cancel-review-button");
 
 const resultAlreadyCompleted = document.getElementById("result-already-completed");
 const resultStudentName = document.getElementById("result-student-name");
 const resultScore = document.getElementById("result-score");
 const resultPercent = document.getElementById("result-percent");
 const resultDetails = document.getElementById("result-details");
-const captureButton = document.getElementById("capture-button");
+const resultReviewButton = document.getElementById("result-review-button");
 const resultBackHomeButton = document.getElementById("result-back-home-button");
+const reviewSummaryMeta = document.getElementById("review-summary-meta");
+const reviewList = document.getElementById("review-list");
+const reviewBackButton = document.getElementById("review-back-button");
 
 startForm.addEventListener("submit", handleStartQuiz);
 nextButton.addEventListener("click", handleNextQuestion);
+if (clearAnswerButton) {
+  clearAnswerButton.addEventListener("click", () => {
+    if (state.timedOutQuestionId) {
+      return;
+    }
+
+    const quiz = getSelectedQuiz();
+    if (!quiz) {
+      return;
+    }
+
+    const activeQuestions = state.activeQuestions.length ? state.activeQuestions : quiz.questions;
+    const question = activeQuestions[state.currentQuestionIndex];
+    if (!question) {
+      return;
+    }
+
+    const selected = questionForm?.querySelector(`input[name="${question.id}"]:checked`);
+    if (selected) {
+      selected.checked = false;
+    }
+
+    delete state.answers[question.id];
+    clearValidationMessage();
+    updateNextButtonVisibility();
+  });
+}
 cancelButton.addEventListener("click", () => {
   openActionModal({
     title: "Cancelar questionário?",
@@ -371,13 +167,31 @@ if (cancelModalCancel) {
   });
 }
 policyReturnButton.addEventListener("click", handleReturnToQuiz);
-captureButton.addEventListener("click", saveResultCapture);
 resultBackHomeButton.addEventListener("click", showHome);
 cancelBackHomeButton.addEventListener("click", showHome);
+if (resultReviewButton) {
+  resultReviewButton.addEventListener("click", () => openReviewScreen("result"));
+}
+if (cancelReviewButton) {
+  cancelReviewButton.addEventListener("click", () => openReviewScreen("cancel"));
+}
+if (reviewBackButton) {
+  reviewBackButton.addEventListener("click", async () => {
+    if (state.reviewBackScreen === "teacher") {
+      await openTeacherPanel();
+      return;
+    }
+    showOnlyScreen(state.reviewBackScreen || "result");
+  });
+}
 teacherRefreshButton.addEventListener("click", openTeacherPanel);
 if (homeHeaderButton) {
   homeHeaderButton.addEventListener("click", () => {
     if (state.isActive && getSelectedQuiz()) {
+      if (state.isTeacher) {
+        showHome();
+        return;
+      }
       openActionModal({
         title: "Ir para a home?",
         text: "Ao voltar para a home, este questionário será cancelado e você perderá o acesso a ele.",
@@ -397,6 +211,20 @@ if (builderAddQuestionButton) {
 }
 
 profileForm.addEventListener("submit", handleProfileSubmit);
+
+if (profileCancelButton) {
+  profileCancelButton.addEventListener("click", () => {
+    state.isRenamingProfile = false;
+    profileMessage.textContent = "";
+    showAuthenticatedUI();
+  });
+}
+
+if (userChip) {
+  userChip.addEventListener("click", () => {
+    openRenameProfileScreen();
+  });
+}
 if (builderForm) {
   builderForm.addEventListener("submit", handleBuilderCreateQuiz);
 }
@@ -429,6 +257,10 @@ if (teacherBuilderButton) {
 
 logoutButton.addEventListener("click", async () => {
   if (state.isActive && getSelectedQuiz()) {
+    if (state.isTeacher) {
+      if (typeof window.firebaseSignOut === "function") await window.firebaseSignOut();
+      return;
+    }
     openActionModal({
       title: "Sair da plataforma?",
       text: "Ao sair agora, este questionário será cancelado e você perderá o acesso a ele.",
@@ -462,27 +294,27 @@ if (authGoogleBtn) {
 quizSearch.addEventListener("input", renderHome);
 
 document.addEventListener("visibilitychange", () => {
-  if (state.isActive && document.visibilityState !== "visible") {
+  if (state.isActive && !state.isTeacher && document.visibilityState !== "visible") {
     handlePolicyViolation();
   }
 });
 
 window.addEventListener("blur", () => {
   setTimeout(() => {
-    if (state.isActive && !document.hasFocus()) {
+    if (state.isActive && !state.isTeacher && !document.hasFocus()) {
       handlePolicyViolation();
     }
   }, 0);
 });
 
 document.addEventListener("fullscreenchange", () => {
-  if (state.isActive && !isFullscreenActive()) {
+  if (state.isActive && !state.isTeacher && !isFullscreenActive()) {
     handlePolicyViolation();
   }
 });
 
 window.addEventListener("beforeunload", (event) => {
-  if (!state.isActive || !getSelectedQuiz()) {
+  if (!state.isActive || state.isTeacher || !getSelectedQuiz()) {
     return;
   }
 
@@ -541,18 +373,22 @@ function consumePendingUnloadCancellation() {
 
 function persistUnloadCancellation() {
   const quiz = getSelectedQuiz();
-  if (!state.isActive || !quiz) {
+  if (!state.isActive || state.isTeacher || !quiz) {
     return;
   }
 
   const cancelAt = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
   const reason = "Questionário cancelado ao recarregar ou fechar a página.";
+  const answersSnapshot = cloneAnswersSnapshot();
+  const result = buildAttemptResult(quiz, answersSnapshot, cancelAt);
 
   saveStoredAttempt(quiz.id, {
     status: "cancelled",
     cancelReason: reason,
     blockedByViolation: false,
-    at: cancelAt
+    at: cancelAt,
+    result,
+    answers: answersSnapshot
   });
 
   savePendingUnloadCancellation({
@@ -561,7 +397,9 @@ function persistUnloadCancellation() {
     questionsLength: quiz.questions.length,
     reason,
     blockedByViolation: false,
-    at: cancelAt
+    at: cancelAt,
+    result,
+    answers: answersSnapshot
   });
 }
 
@@ -581,14 +419,144 @@ function flushPendingUnloadCancellation() {
   saveCancelledAttemptToFirestore(quizLike, {
     reason: pending.reason,
     blockedByViolation: pending.blockedByViolation,
-    at: pending.at
+    at: pending.at,
+    result: pending.result,
+    answers: pending.answers || {}
   });
 }
 
+async function refreshQuizConfigs() {
+  if (!window.firebaseDB || !window.firebaseCollection || !window.firebaseGetDocs) {
+    state.quizConfigs = {};
+    return;
+  }
+
+  try {
+    const configRef = window.firebaseCollection(window.firebaseDB, "quizzes_config");
+    const snap = await window.firebaseGetDocs(configRef);
+    const nextMap = {};
+
+    snap.forEach((docSnap) => {
+      const data = docSnap.data() || {};
+      nextMap[docSnap.id] = {
+        allowStudentReview: Boolean(data.allowStudentReview),
+        hidden: Boolean(data.hidden)
+      };
+    });
+
+    state.quizConfigs = nextMap;
+    renderHome();
+  } catch (error) {
+    console.error("Erro ao carregar configuração de quizzes:", error);
+  }
+}
+
+function isRetakeReleased(quizId) {
+  return Boolean(state.retakeReleases?.[quizId]);
+}
+
+async function refreshRetakeReleases() {
+  if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseGetDoc || !state.profileSlug) {
+    state.retakeReleases = {};
+    return;
+  }
+
+  try {
+    const userRef = window.firebaseDoc(window.firebaseDB, "usuarios", state.profileSlug);
+    const userSnap = await window.firebaseGetDoc(userRef);
+    if (!userSnap.exists()) {
+      state.retakeReleases = {};
+      return;
+    }
+
+    const data = userSnap.data() || {};
+    state.retakeReleases = data.liberacoes || {};
+    renderHome();
+  } catch (error) {
+    console.error("Erro ao carregar liberações de refazer:", error);
+    state.retakeReleases = {};
+  }
+}
+
+async function setRetakeReleaseForStudent(slug, quizId, liberar) {
+  if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseSetDoc) {
+    throw new Error("Firebase indisponível para liberar nova tentativa.");
+  }
+
+  const userRef = window.firebaseDoc(window.firebaseDB, "usuarios", slug);
+  await window.firebaseSetDoc(userRef, {
+    liberacoes: { [quizId]: Boolean(liberar) },
+    atualizadoEmIso: new Date().toISOString()
+  }, { merge: true });
+}
+
+async function consumeRetakeRelease(quizId) {
+  if (!isRetakeReleased(quizId) || !state.profileSlug) {
+    return;
+  }
+
+  state.retakeReleases[quizId] = false;
+  try {
+    await setRetakeReleaseForStudent(state.profileSlug, quizId, false);
+  } catch (error) {
+    console.error("Erro ao consumir liberação de refazer:", error);
+  }
+}
+
+async function gradeQuizAttemptSecure(quiz, answersSnapshot, at) {
+  if (!window.firebaseHttpsCallable || !window.firebaseFunctions) {
+    throw new Error("Firebase Functions não está disponível.");
+  }
+
+  const callable = window.firebaseHttpsCallable(window.firebaseFunctions, "gradeQuizAttempt");
+  const response = await callable({
+    quizId: quiz.id,
+    studentName: state.studentName,
+    profileSlug: state.profileSlug,
+    date: at,
+    answers: answersSnapshot || {}
+  });
+
+  const data = response?.data || {};
+  if (!data || !data.result) {
+    throw new Error("Resposta inválida da correção segura.");
+  }
+
+  return {
+    result: data.result,
+    questionResults: Array.isArray(data.questionResults) ? data.questionResults : []
+  };
+}
+
+async function getQuizAnswerKeySecure(quizId) {
+  if (!window.firebaseHttpsCallable || !window.firebaseFunctions) {
+    return {};
+  }
+
+  try {
+    const callable = window.firebaseHttpsCallable(window.firebaseFunctions, "getQuizAnswerKey");
+    const response = await callable({ quizId });
+    const data = response?.data || {};
+    return data.answerKey && typeof data.answerKey === "object" ? data.answerKey : {};
+  } catch (error) {
+    console.error("Não foi possível carregar o gabarito privado para edição:", error);
+    return {};
+  }
+}
+
 function getAllQuizzes() {
-  const customIds = new Set(state.customQuizzes.map((q) => q.id));
-  const base = quizzes.filter((q) => !customIds.has(q.id));
-  return [...base, ...state.customQuizzes];
+  const all = [...state.customQuizzes];
+
+  return all
+    .map((quiz) => {
+      const cfg = state.quizConfigs[quiz.id] || {};
+      return {
+        ...quiz,
+        allowStudentReview: cfg.allowStudentReview ?? Boolean(quiz.allowStudentReview),
+        hidden: cfg.hidden ?? false
+      };
+    })
+    .filter((quiz) => !quiz.hidden);
 }
 
 function shuffleArray(list) {
@@ -638,11 +606,6 @@ function normalizeCustomQuiz(rawQuiz, docId) {
         return null;
       }
 
-      const correctAnswer = String(question.correctAnswer || "");
-      if (!options.some((option) => option.value === correctAnswer)) {
-        return null;
-      }
-
       return {
         id: question.id || `q${index + 1}`,
         type: "single-choice",
@@ -650,8 +613,7 @@ function normalizeCustomQuiz(rawQuiz, docId) {
         description: question.description || "Selecione apenas uma alternativa.",
         points: Number(question.points || 1),
         timer: Number(question.timer || 0),
-        options,
-        correctAnswer
+        options
       };
     })
     .filter(Boolean);
@@ -665,6 +627,7 @@ function normalizeCustomQuiz(rawQuiz, docId) {
     title: rawQuiz.title,
     description: rawQuiz.description || "",
     duration: rawQuiz.duration || "10 min",
+    allowStudentReview: Boolean(rawQuiz.allowStudentReview),
     questions: normalizedQuestions,
     isCustom: true
   };
@@ -699,15 +662,49 @@ async function refreshCustomQuizzes() {
   }
 }
 
-async function removeCustomQuiz(quizId) {
+async function setQuizConfig(quizId, patch) {
+  if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseSetDoc) {
+    throw new Error("Firebase indisponível para atualizar configuração do quiz.");
+  }
+
+  const cfgRef = window.firebaseDoc(window.firebaseDB, "quizzes_config", quizId);
+  await window.firebaseSetDoc(cfgRef, {
+    ...patch,
+    atualizadoEmIso: new Date().toISOString(),
+    atualizadoPorUid: state.user?.uid || "",
+    atualizadoPorEmail: state.user?.email || ""
+  }, { merge: true });
+}
+
+async function toggleQuizReview(quizId) {
+  if (!state.isTeacher) {
+    return;
+  }
+
+  const quiz = getAllQuizzes().find((item) => item.id === quizId);
+  if (!quiz) {
+    return;
+  }
+
+  try {
+    await setQuizConfig(quizId, { allowStudentReview: !Boolean(quiz.allowStudentReview), hidden: false });
+    await refreshQuizConfigs();
+    await refreshCustomQuizzes();
+  } catch (error) {
+    console.error("Erro ao atualizar liberação do resumo:", error);
+    alert("Não foi possível atualizar a liberação de resumo.");
+  }
+}
+
+async function removeQuiz(quizId) {
   if (!state.isTeacher) {
     alert("Apenas professores podem remover quizzes.");
     return;
   }
 
-  const quiz = state.customQuizzes.find((item) => item.id === quizId);
+  const quiz = getAllQuizzes().find((item) => item.id === quizId);
   if (!quiz) {
-    alert("Somente quizzes personalizados podem ser removidos.");
+    alert("Quiz não encontrado para remoção.");
     return;
   }
 
@@ -732,18 +729,23 @@ async function removeCustomQuiz(quizId) {
     return;
   }
 
-  if (!window.firebaseDB || !window.firebaseDoc || (!window.firebaseDeleteDoc && !window.firebaseSetDoc)) {
+  if (!window.firebaseDB || !window.firebaseDoc || !window.firebaseSetDoc) {
     alert("Firebase indisponível para remover quiz.");
     return;
   }
 
   try {
-    const quizRef = window.firebaseDoc(window.firebaseDB, "quizzes_custom", quizId);
-    if (window.firebaseDeleteDoc) {
-      await window.firebaseDeleteDoc(quizRef);
-    } else {
-      await window.firebaseSetDoc(quizRef, { ativo: false }, { merge: true });
+    if (quiz.isCustom) {
+      const quizRef = window.firebaseDoc(window.firebaseDB, "quizzes_custom", quizId);
+      if (window.firebaseDeleteDoc) {
+        await window.firebaseDeleteDoc(quizRef);
+      } else {
+        await window.firebaseSetDoc(quizRef, { ativo: false }, { merge: true });
+      }
     }
+
+    await setQuizConfig(quizId, { hidden: true });
+    await refreshQuizConfigs();
     await refreshCustomQuizzes();
   } catch (error) {
     console.error("Erro ao remover quiz:", error);
@@ -755,7 +757,58 @@ function getProfileStorageKey() {
   return `quiz_profile_${state.user?.uid || "anon"}`;
 }
 
+function getRenameStorageKey() {
+  return `quiz_last_rename_${state.user?.uid || "anon"}`;
+}
+
+function getLastRenameDate() {
+  return localStorage.getItem(getRenameStorageKey()) || null;
+}
+
+function saveLastRenameDate() {
+  const today = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
+  localStorage.setItem(getRenameStorageKey(), today);
+}
+
+function canRenameToday() {
+  const last = getLastRenameDate();
+  if (!last) return true;
+  const today = new Date().toISOString().slice(0, 10);
+  return last !== today;
+}
+
+function openRenameProfileScreen() {
+  if (!canRenameToday()) {
+    const last = getLastRenameDate();
+    const next = new Date(last + "T00:00:00");
+    next.setDate(next.getDate() + 1);
+    const nextStr = next.toLocaleDateString("pt-BR");
+    alert(`Você já alterou seu nome hoje. Tente novamente a partir de ${nextStr}.`);
+    return;
+  }
+
+  state.isRenamingProfile = true;
+  if (profileScreenTitle) profileScreenTitle.textContent = "Alterar nome";
+  if (profileScreenSubtitle) profileScreenSubtitle.textContent = "Você pode alterar seu nome uma vez por dia.";
+  if (profileSubmitButton) profileSubmitButton.textContent = "Salvar novo nome";
+  if (profileCancelButton) profileCancelButton.classList.remove("hidden");
+  profileMessage.textContent = "";
+  profileNameInput.value = state.studentName || "";
+
+  authScreen.classList.add("hidden");
+  homeScreen.classList.add("hidden");
+  profileScreen.classList.remove("hidden");
+  showOnlyScreen(null);
+}
+
 function showProfileScreen() {
+  state.isRenamingProfile = false;
+  if (profileScreenTitle) profileScreenTitle.textContent = "Primeiro acesso";
+  if (profileScreenSubtitle) profileScreenSubtitle.textContent = "Antes de continuar, informe o nome que será usado em todos os quizzes.";
+  if (profileSubmitButton) profileSubmitButton.textContent = "Salvar e continuar";
+  if (profileCancelButton) profileCancelButton.classList.add("hidden");
+  profileMessage.textContent = "";
+  profileNameInput.value = "";
   authScreen.classList.add("hidden");
   homeScreen.classList.add("hidden");
   profileScreen.classList.remove("hidden");
@@ -810,11 +863,48 @@ async function handleProfileSubmit(event) {
     return;
   }
 
+  // Enforce daily rename limit when editing (not first access)
+  if (state.isRenamingProfile) {
+    if (!canRenameToday()) {
+      const last = getLastRenameDate();
+      const next = new Date(last + "T00:00:00");
+      next.setDate(next.getDate() + 1);
+      profileMessage.textContent = `Você já alterou seu nome hoje. Tente novamente a partir de ${next.toLocaleDateString("pt-BR")}.`;
+      return;
+    }
+  }
+
   const slug = normalizeNameSlug(typedName);
+
+  // Check if name is already taken by another user
+  if (window.firebaseDoc && window.firebaseGetDoc && window.firebaseDB) {
+    try {
+      profileMessage.textContent = "Verificando disponibilidade do nome...";
+      const userFolderRef = window.firebaseDoc(window.firebaseDB, "usuarios", slug);
+      const existingSnap = await window.firebaseGetDoc(userFolderRef);
+      if (existingSnap.exists()) {
+        const existingUid = existingSnap.data()?.ultimoUid;
+        if (existingUid && existingUid !== state.user?.uid) {
+          profileMessage.textContent = "Este nome já está em uso por outro usuário. Escolha um nome diferente.";
+          return;
+        }
+      }
+      profileMessage.textContent = "";
+    } catch (error) {
+      profileMessage.textContent = "Não foi possível verificar o nome agora.";
+      console.error("Erro ao verificar nome:", error);
+      return;
+    }
+  }
+
   state.studentName = typedName;
   state.profileSlug = slug;
 
   localStorage.setItem(getProfileStorageKey(), JSON.stringify({ name: typedName, slug }));
+
+  if (state.isRenamingProfile) {
+    saveLastRenameDate();
+  }
 
   if (window.firebaseDoc && window.firebaseSetDoc && window.firebaseDB && state.user) {
     try {
@@ -850,6 +940,7 @@ async function handleProfileSubmit(event) {
     }
   }
 
+  state.isRenamingProfile = false;
   profileScreen.classList.add("hidden");
   showAuthenticatedUI();
 }
@@ -882,6 +973,8 @@ function showAuthenticatedUI() {
   renderHome();
   flushPendingUnloadCancellation();
   refreshRemoteAttempts();
+  refreshQuizConfigs();
+  refreshRetakeReleases();
   refreshCustomQuizzes();
   refreshTeacherAccess();
 }
@@ -890,8 +983,10 @@ function showUnauthenticatedUI() {
   state.isTeacher = false;
   state.studentName = "";
   state.profileSlug = "";
+  state.quizConfigs = {};
   state.remoteAttemptsByQuiz = {};
   state.remoteAttemptsLoaded = false;
+  state.retakeReleases = {};
   authScreen.classList.remove("hidden");
   profileScreen.classList.add("hidden");
   teacherScreen.classList.add("hidden");
@@ -983,9 +1078,19 @@ function getLatestAttemptsByQuiz(attempts) {
   return Object.values(latestMap);
 }
 
-async function unlockQuizForStudent(slug, quizId) {
-  if (!window.firebaseDB || !window.firebaseCollection || !window.firebaseQuery || !window.firebaseWhere || !window.firebaseGetDocs || !window.firebaseDeleteDoc || !window.firebaseDoc) {
+async function releaseQuizForStudent(slug, quizId) {
+  try {
+    await setRetakeReleaseForStudent(slug, quizId, true);
+    return true;
+  } catch (error) {
+    console.error("Erro ao liberar quiz:", error);
     return false;
+  }
+}
+
+async function loadLatestAttemptBySlugQuiz(slug, quizId) {
+  if (!window.firebaseDB || !window.firebaseCollection || !window.firebaseQuery || !window.firebaseWhere || !window.firebaseGetDocs) {
+    return null;
   }
 
   try {
@@ -993,20 +1098,60 @@ async function unlockQuizForStudent(slug, quizId) {
     const q = window.firebaseQuery(attemptsRef, window.firebaseWhere("quizId", "==", quizId));
     const snap = await window.firebaseGetDocs(q);
     if (snap.empty) {
-      return true;
+      return null;
     }
 
-    const deletions = [];
+    let latest = null;
     snap.forEach((docSnap) => {
-      const ref = window.firebaseDoc(window.firebaseDB, "usuarios", slug, "tentativas", docSnap.id);
-      deletions.push(window.firebaseDeleteDoc(ref));
+      const data = docSnap.data() || {};
+      if (!latest || parsePtBrDate(data.data) >= parsePtBrDate(latest.data || "")) {
+        latest = data;
+      }
     });
-    await Promise.all(deletions);
-    return true;
+    return latest;
   } catch (error) {
-    console.error("Erro ao desbloquear quiz:", error);
-    return false;
+    console.error("Erro ao carregar tentativa do aluno:", error);
+    return null;
   }
+}
+
+function openTeacherAttemptReview(attempt) {
+  if (!attempt) {
+    return;
+  }
+
+  const quiz = getAllQuizzes().find((item) => item.id === attempt.quizId);
+  if (!quiz || !reviewList || !reviewSummaryMeta) {
+    alert("Não foi possível abrir o resumo deste quiz.");
+    return;
+  }
+
+  state.reviewBackScreen = "teacher";
+  reviewSummaryMeta.textContent = `${attempt.pontos ?? 0} / ${attempt.total ?? quiz.questions.length} pontos �?� ${attempt.percentual ?? 0}% de acertos`;
+
+  const questionResults = Array.isArray(attempt.correcaoQuestoes) ? attempt.correcaoQuestoes : [];
+  if (questionResults.length > 0) {
+    reviewList.innerHTML = questionResults.map((item, index) => {
+      const statusClass = item.isCorrect ? "review-card-correct" : (item.selectedValue ? "review-card-wrong" : "review-card-blank");
+      const statusText = item.selectedValue ? (item.isCorrect ? "Acertou" : "Errou") : "Em branco";
+
+      return `
+        <article class="builder-question-card review-card ${statusClass}">
+          <div class="builder-question-head">
+            <h4>Questão ${index + 1}</h4>
+            <span class="quiz-status ${item.isCorrect ? "available" : "cancelled"}">${statusText}</span>
+          </div>
+          <p><strong>${item.questionTitle || `Questão ${index + 1}`}</strong></p>
+          <p>Resposta marcada: ${item.selectedLabel || "Nenhuma alternativa marcada"}</p>
+          <p>Resposta correta: ${item.correctLabel || "-"}</p>
+        </article>
+      `;
+    }).join("");
+  } else {
+    reviewList.innerHTML = `<article class="builder-question-card review-card review-card-blank"><p>Resumo detalhado indisponível para esta tentativa antiga.</p></article>`;
+  }
+
+  showOnlyScreen("review");
 }
 
 async function loadTeacherPanelData() {
@@ -1052,8 +1197,11 @@ async function loadTeacherPanelData() {
             : "Concluído"}</td>
               <td>${attempt.data || "-"}</td>
               <td>
-                <button class="btn btn-ghost teacher-unlock-btn" data-slug="${slug}" data-quizid="${attempt.quizId}">
-                  Desbloquear
+                <button class="btn btn-ghost teacher-release-btn" data-slug="${slug}" data-quizid="${attempt.quizId}">
+                  Liberar
+                </button>
+                <button class="btn btn-ghost teacher-summary-btn" data-slug="${slug}" data-quizid="${attempt.quizId}">
+                  Resumo
                 </button>
               </td>
             </tr>
@@ -1086,7 +1234,7 @@ async function loadTeacherPanelData() {
     teacherUsersList.innerHTML = cards.join("");
     teacherMessage.textContent = "";
 
-    teacherUsersList.querySelectorAll(".teacher-unlock-btn").forEach((button) => {
+    teacherUsersList.querySelectorAll(".teacher-release-btn").forEach((button) => {
       button.addEventListener("click", async () => {
         const slug = button.dataset.slug;
         const quizId = button.dataset.quizid;
@@ -1094,24 +1242,41 @@ async function loadTeacherPanelData() {
           return;
         }
 
-        const ok = confirm(`Desbloquear o quiz '${quizId}' para este aluno?`);
+        const ok = confirm(`Liberar nova chance do quiz '${quizId}' para este aluno?`);
         if (!ok) {
           return;
         }
 
         button.disabled = true;
-        button.textContent = "Desbloqueando...";
+        button.textContent = "Liberando...";
 
-        const unlocked = await unlockQuizForStudent(slug, quizId);
-        if (unlocked) {
-          button.textContent = "Desbloqueado";
-          teacherMessage.textContent = "Quiz desbloqueado com sucesso.";
-          await refreshRemoteAttempts();
+        const released = await releaseQuizForStudent(slug, quizId);
+        if (released) {
+          button.textContent = "Liberado";
+          teacherMessage.textContent = "Nova chance liberada com sucesso.";
         } else {
           button.disabled = false;
-          button.textContent = "Desbloquear";
-          teacherMessage.textContent = "Erro ao desbloquear quiz.";
+          button.textContent = "Liberar";
+          teacherMessage.textContent = "Erro ao liberar nova chance.";
         }
+      });
+    });
+
+    teacherUsersList.querySelectorAll(".teacher-summary-btn").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const slug = button.dataset.slug;
+        const quizId = button.dataset.quizid;
+        if (!slug || !quizId) {
+          return;
+        }
+
+        const attempt = await loadLatestAttemptBySlugQuiz(slug, quizId);
+        if (!attempt) {
+          alert("Este aluno ainda não possui tentativa para este quiz.");
+          return;
+        }
+
+        openTeacherAttemptReview(attempt);
       });
     });
   } catch (error) {
@@ -1248,11 +1413,13 @@ function resetBuilderForm() {
   addBuilderQuestionCard();
 }
 
-function startEditingQuiz(quizId) {
+async function startEditingQuiz(quizId) {
   const quiz = getAllQuizzes().find((item) => item.id === quizId);
   if (!quiz || !builderQuestions) {
     return;
   }
+
+  const answerKey = await getQuizAnswerKeySecure(quiz.id);
 
   state.editingQuizId = quiz.id;
   openBuilderScreen(false);
@@ -1260,7 +1427,13 @@ function startEditingQuiz(quizId) {
   builderDescriptionInput.value = quiz.description || "";
   builderDurationInput.value = quiz.duration || "8 min";
   builderQuestions.innerHTML = "";
-  (quiz.questions || []).forEach((question) => addBuilderQuestionCard(question));
+  (quiz.questions || []).forEach((question, index) => {
+    const questionId = question.id || `q${index + 1}`;
+    addBuilderQuestionCard({
+      ...question,
+      correctAnswer: String(answerKey[questionId] || "")
+    });
+  });
   if (builderSubmitButton) {
     builderSubmitButton.textContent = "Salvar alteracoes";
   }
@@ -1271,6 +1444,7 @@ function startEditingQuiz(quizId) {
 
 function buildQuestionsFromBuilder() {
   const questions = [];
+  const answerKey = {};
 
   for (const card of getBuilderQuestionCards()) {
     const title = card.querySelector(".builder-question-title")?.value.trim() || "";
@@ -1310,16 +1484,17 @@ function buildQuestionsFromBuilder() {
       description: description || "Selecione apenas uma alternativa.",
       points: Number.isFinite(points) && points > 0 ? points : 1,
       options,
-      correctAnswer,
       timer: Number.isFinite(timer) && timer > 0 ? timer : 0
     });
+
+    answerKey[`q${questions.length}`] = correctAnswer;
   }
 
   if (questions.length === 0) {
     return { error: "Adicione ao menos uma questão." };
   }
 
-  return { questions };
+  return { questions, answerKey };
 }
 
 function openBuilderScreen(shouldReset = true) {
@@ -1391,7 +1566,17 @@ async function handleBuilderCreateQuiz(event) {
 
   try {
     const quizRef = window.firebaseDoc(window.firebaseDB, "quizzes_custom", quizId);
-    await window.firebaseSetDoc(quizRef, payload);
+    const answersRef = window.firebaseDoc(window.firebaseDB, "quizzes_answer_keys", quizId);
+    await Promise.all([
+      window.firebaseSetDoc(quizRef, payload),
+      window.firebaseSetDoc(answersRef, {
+        quizId,
+        answers: built.answerKey,
+        atualizadoEmIso: new Date().toISOString(),
+        atualizadoPorUid: state.user?.uid || "",
+        atualizadoPorEmail: state.user?.email || ""
+      }, { merge: true })
+    ]);
     if (builderMessage) {
       builderMessage.textContent = state.editingQuizId ? "Quiz atualizado com sucesso." : "Quiz publicado com sucesso.";
     }
@@ -1420,15 +1605,99 @@ function getStoredAttempt(quizId) {
 }
 
 function getKnownAttempt(quizId) {
+  const localAttempt = getStoredAttempt(quizId);
+  if (localAttempt) {
+    return localAttempt;
+  }
+
   if (state.remoteAttemptsLoaded) {
     return state.remoteAttemptsByQuiz[quizId] || null;
   }
 
-  return getStoredAttempt(quizId) || null;
+  return null;
 }
 
 function saveStoredAttempt(quizId, payload) {
   localStorage.setItem(getStorageKey(quizId), JSON.stringify(payload));
+  if (state.remoteAttemptsLoaded) {
+    state.remoteAttemptsByQuiz[quizId] = payload;
+  }
+}
+
+function cloneAnswersSnapshot() {
+  return { ...state.answers };
+}
+
+function buildAttemptResult(quiz, answersSnapshot = cloneAnswersSnapshot(), at = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })) {
+  const previousAnswers = state.answers;
+  state.answers = answersSnapshot;
+  const { earnedPoints, maxPoints, percent } = evaluateQuiz(quiz);
+  state.answers = previousAnswers;
+
+  return {
+    quizId: quiz.id,
+    quizTitle: quiz.title,
+    studentName: state.studentName,
+    earnedPoints,
+    maxPoints,
+    percent,
+    date: at
+  };
+}
+
+function getAttemptForSelectedQuiz() {
+  const quiz = getSelectedQuiz();
+  if (!quiz) {
+    return null;
+  }
+  return getKnownAttempt(quiz.id);
+}
+
+function updateReviewButtons(quiz, attempt) {
+  const canShow = Boolean(quiz?.allowStudentReview && attempt?.result);
+
+  if (resultReviewButton) {
+    resultReviewButton.classList.toggle("hidden", !canShow || attempt?.status !== "completed");
+  }
+
+  if (cancelReviewButton) {
+    cancelReviewButton.classList.toggle("hidden", !canShow || attempt?.status !== "cancelled");
+  }
+}
+
+function openReviewScreen(backScreen = "result") {
+  const quiz = getSelectedQuiz();
+  const attempt = getAttemptForSelectedQuiz();
+  if (!quiz || !attempt?.result || !reviewList || !reviewSummaryMeta) {
+    return;
+  }
+
+  state.reviewBackScreen = backScreen;
+  reviewSummaryMeta.textContent = `${attempt.result.earnedPoints} / ${attempt.result.maxPoints} pontos �?� ${attempt.result.percent}% de acertos`;
+
+  const questionResults = attempt?.questionResults || attempt?.result?.questionResults || [];
+  if (questionResults.length > 0) {
+    reviewList.innerHTML = questionResults.map((item, index) => {
+      const statusClass = item.isCorrect ? "review-card-correct" : (item.selectedValue ? "review-card-wrong" : "review-card-blank");
+      const statusText = item.selectedValue ? (item.isCorrect ? "Acertou" : "Errou") : "Em branco";
+
+      return `
+        <article class="builder-question-card review-card ${statusClass}">
+          <div class="builder-question-head">
+            <h4>Questão ${index + 1}</h4>
+            <span class="quiz-status ${item.isCorrect ? "available" : "cancelled"}">${statusText}</span>
+          </div>
+          <p><strong>${item.questionTitle || `Questão ${index + 1}`}</strong></p>
+          <p>Resposta marcada: ${item.selectedLabel || "Nenhuma alternativa marcada"}</p>
+          <p>Resposta correta: ${item.correctLabel || "-"}</p>
+        </article>
+      `;
+    }).join("");
+  } else {
+    reviewList.innerHTML = `<article class="builder-question-card review-card review-card-blank"><p>Resumo detalhado indisponível para esta tentativa antiga.</p></article>`;
+  }
+
+  showOnlyScreen("review");
 }
 
 async function refreshRemoteAttempts() {
@@ -1447,6 +1716,13 @@ async function refreshRemoteAttempts() {
         return;
       }
 
+      const current = nextMap[data.quizId];
+      const nextTs = parsePtBrDate(data.data || "");
+      const currentTs = current ? parsePtBrDate(current.result?.date || "") : -1;
+      if (current && nextTs < currentTs) {
+        return;
+      }
+
       nextMap[data.quizId] = {
         status: data.status || "completed",
         cancelReason: data.motivoCancelamento || "",
@@ -1458,9 +1734,11 @@ async function refreshRemoteAttempts() {
           earnedPoints: data.pontos ?? 0,
           maxPoints: data.total ?? 0,
           percent: data.percentual ?? 0,
-          date: data.data
+          date: data.data,
+          questionResults: data.correcaoQuestoes || []
         },
-        answers: data.respostas || {}
+        answers: data.respostas || {},
+        questionResults: data.correcaoQuestoes || []
       };
     });
 
@@ -1525,16 +1803,32 @@ function renderHome() {
       </div>
       <p>${quiz.description}</p>
       <ul class="quiz-meta">
-        <li>Duração: ${quiz.duration}</li>
         <li>Questões: ${quiz.questions.length}</li>
       </ul>
       <div class="quiz-card-actions">
-        <button class="btn btn-primary" data-quiz="${quiz.id}">
+        <button class="btn btn-primary btn-sm" data-quiz="${quiz.id}">
           ${attempt ? "Ver detalhes" : "Abrir quiz"}
         </button>
-        ${state.isTeacher ? `<button class="btn btn-ghost" data-edit-quiz="${quiz.id}">Editar quiz</button>` : ""}
-        ${state.isTeacher && quiz.isCustom ? `<button class="btn btn-danger-soft" data-remove-quiz="${quiz.id}">Remover quiz</button>` : ""}
+        ${attempt?.result ? (quiz.allowStudentReview ? `<button class="btn btn-ghost btn-sm" data-quick-review="${quiz.id}">Resumo</button>` : `<button class="btn btn-ghost btn-sm" disabled title="Resumo bloqueado no momento">Resumo</button>`) : ""}
+        ${state.isTeacher ? `<button class="btn btn-ghost btn-sm" data-toggle-review="${quiz.id}">${quiz.allowStudentReview ? "Bloquear resumo" : "Liberar resumo"}</button>` : ""}
+        ${state.isTeacher ? `
+          <div class="icon-group">
+            <button class="btn btn-ghost btn-sm btn-icon" data-edit-quiz="${quiz.id}" title="Editar quiz" aria-label="Editar quiz">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="currentColor" />
+                <path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z" fill="currentColor" />
+              </svg>
+            </button>
+            <button class="btn btn-danger-soft btn-sm btn-icon" data-remove-quiz="${quiz.id}" title="Remover quiz" aria-label="Remover quiz">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M9 3v1H4v2h16V4h-5V3H9z" fill="currentColor" />
+                <path d="M6 7l1 14a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-14H6z" fill="currentColor" />
+              </svg>
+            </button>
+          </div>
+        ` : ""}
       </div>
+      ${attempt && !quiz.allowStudentReview ? `<p class="quiz-review-note">Resumo bloqueado no momento.</p>` : ""}
     `;
 
     const button = card.querySelector("button[data-quiz]");
@@ -1542,17 +1836,32 @@ function renderHome() {
       await openQuiz(quiz.id);
     });
 
+    const quickReviewButton = card.querySelector("button[data-quick-review]");
+    if (quickReviewButton) {
+      quickReviewButton.addEventListener("click", () => {
+        state.selectedQuizId = quiz.id;
+        openReviewScreen("result");
+      });
+    }
+
     const editButton = card.querySelector("button[data-edit-quiz]");
     if (editButton) {
-      editButton.addEventListener("click", () => {
-        startEditingQuiz(quiz.id);
+      editButton.addEventListener("click", async () => {
+        await startEditingQuiz(quiz.id);
       });
     }
 
     const removeButton = card.querySelector("button[data-remove-quiz]");
     if (removeButton) {
       removeButton.addEventListener("click", async () => {
-        await removeCustomQuiz(quiz.id);
+        await removeQuiz(quiz.id);
+      });
+    }
+
+    const toggleReviewButton = card.querySelector("button[data-toggle-review]");
+    if (toggleReviewButton) {
+      toggleReviewButton.addEventListener("click", async () => {
+        await toggleQuizReview(quiz.id);
       });
     }
 
@@ -1560,8 +1869,9 @@ function renderHome() {
   });
 }
 
+
 async function getRemoteAttemptForQuiz(quizId) {
-  if (!window.firebaseDB || !window.firebaseCollection || !window.firebaseQuery || !window.firebaseWhere || !window.firebaseLimit || !window.firebaseGetDocs) {
+  if (!window.firebaseDB || !window.firebaseCollection || !window.firebaseQuery || !window.firebaseWhere || !window.firebaseGetDocs) {
     return null;
   }
 
@@ -1573,8 +1883,7 @@ async function getRemoteAttemptForQuiz(quizId) {
     const attemptsRef = window.firebaseCollection(window.firebaseDB, "usuarios", state.profileSlug, "tentativas");
     const q = window.firebaseQuery(
       attemptsRef,
-      window.firebaseWhere("quizId", "==", quizId),
-      window.firebaseLimit(1)
+      window.firebaseWhere("quizId", "==", quizId)
     );
     const snap = await window.firebaseGetDocs(q);
 
@@ -1582,21 +1891,34 @@ async function getRemoteAttemptForQuiz(quizId) {
       return null;
     }
 
-    const data = snap.docs[0].data();
+    let latest = null;
+    snap.forEach((docSnap) => {
+      const data = docSnap.data();
+      if (!latest || parsePtBrDate(data.data || "") >= parsePtBrDate(latest.data || "")) {
+        latest = data;
+      }
+    });
+
+    if (!latest) {
+      return null;
+    }
+
     return {
-      status: data.status || "completed",
-      cancelReason: data.motivoCancelamento || "",
-      blockedByViolation: Boolean(data.bloqueadoPorViolacao),
+      status: latest.status || "completed",
+      cancelReason: latest.motivoCancelamento || "",
+      blockedByViolation: Boolean(latest.bloqueadoPorViolacao),
       result: {
-        quizId: data.quizId,
-        quizTitle: data.quizTitulo,
-        studentName: data.nome,
-        earnedPoints: data.pontos ?? 0,
-        maxPoints: data.total ?? 0,
-        percent: data.percentual ?? 0,
-        date: data.data
+        quizId: latest.quizId,
+        quizTitle: latest.quizTitulo,
+        studentName: latest.nome,
+        earnedPoints: latest.pontos ?? 0,
+        maxPoints: latest.total ?? 0,
+        percent: latest.percentual ?? 0,
+        date: latest.data,
+        questionResults: latest.correcaoQuestoes || []
       },
-      answers: data.respostas || {}
+      answers: latest.respostas || {},
+      questionResults: latest.correcaoQuestoes || []
     };
   } catch (error) {
     console.error("Erro ao consultar tentativa no Firestore:", error);
@@ -1621,15 +1943,20 @@ async function openQuiz(quizId) {
     return;
   }
 
-  if (attempt?.status === "completed") {
+  const retakeReleased = isRetakeReleased(quizId);
+
+  if (!retakeReleased && attempt?.status === "completed") {
     resultAlreadyCompleted.classList.remove("hidden");
     showResult(attempt.result, "Você já realizou este questionário. Este é seu resultado anterior.");
+    updateReviewButtons(quiz, attempt);
     return;
   }
 
-  if (attempt?.status === "cancelled") {
-    cancelMessage.textContent = attempt.cancelReason || "Questionário cancelado por violação de regras.";
+  if (!retakeReleased && attempt?.status === "cancelled") {
+    const blockedMsg = !quiz.allowStudentReview ? "\nResumo bloqueado no momento." : "";
+    cancelMessage.textContent = `${attempt.cancelReason || "Questionário cancelado por violação de regras."}${blockedMsg}`;
     showOnlyScreen("cancel");
+    updateReviewButtons(quiz, attempt);
     return;
   }
 
@@ -1691,6 +2018,7 @@ function clearSessionState() {
   state.isActive = false;
   state.isCancelled = false;
   state.timedOutQuestionId = null;
+  state.reviewBackScreen = "result";
   state.violationCount = 0;
   state.isViolationGraceActive = false;
   clearQuestionTimerState();
@@ -1729,6 +2057,18 @@ function updateNextButtonVisibility() {
   const selected = questionForm?.querySelector("input[type='radio']:checked");
   const shouldShow = Boolean(selected) && !state.timedOutQuestionId;
   nextButton.classList.toggle("hidden", !shouldShow);
+  if (clearAnswerButton) {
+    clearAnswerButton.classList.toggle("hidden", !shouldShow);
+  }
+  // mark selected option visually
+  if (questionForm) {
+    const allOptions = questionForm.querySelectorAll('.answer-option');
+    allOptions.forEach((opt) => opt.classList.remove('selected'));
+    if (selected) {
+      const parent = selected.closest('.answer-option');
+      if (parent) parent.classList.add('selected');
+    }
+  }
 }
 
 function clearQuestionTimerState() {
@@ -1798,6 +2138,9 @@ function handleQuestionTimerExpired(question) {
 
   nextButton.disabled = true;
   nextButton.classList.add("hidden");
+  if (clearAnswerButton) {
+    clearAnswerButton.classList.add("hidden");
+  }
 
   if (!questionInfoArea) {
     advanceQuestion({ allowBlank: true });
@@ -1863,7 +2206,7 @@ async function handleStartQuiz(event) {
 
   const enteredFullscreen = await requestFullscreenMode();
   if (!enteredFullscreen) {
-    alert("É obrigatório permanecer em tela cheia para realizar o questionário.");
+    alert("�? obrigatório permanecer em tela cheia para realizar o questionário.");
     return;
   }
 
@@ -1871,7 +2214,10 @@ async function handleStartQuiz(event) {
   state.activeQuestions = buildShuffledQuestionSet(quiz);
   state.isActive = true;
 
+  await consumeRetakeRelease(quiz.id);
+
   showOnlyScreen("quiz");
+  cancelButton.classList.toggle("hidden", state.isTeacher);
   renderQuestion();
 }
 
@@ -1908,14 +2254,57 @@ function renderQuestion() {
     input.value = option.value;
     input.required = true;
     input.checked = state.answers[question.id] === option.value;
-    input.addEventListener("change", updateNextButtonVisibility);
+    input.addEventListener("change", () => {
+      state.answers[question.id] = input.value;
+      updateNextButtonVisibility();
+    });
+
+    const content = document.createElement("div");
+    content.className = "answer-option-content";
+
+    const placeholders = document.createElement("div");
+    placeholders.className = "answer-placeholders";
+
+    // Determine if the option text will wrap to two lines by measuring
+    // its rendered width against the available placeholder width.
+    let lineCount = 1;
+    try {
+      const available = Math.max(120, questionForm.clientWidth * 0.74);
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const cs = window.getComputedStyle(questionForm || document.body);
+      // prefer the full font shorthand if available
+      ctx.font = cs.font || `${cs.fontSize} ${cs.fontFamily}`;
+      const measured = ctx.measureText(option.label || "").width;
+      if (measured > available) lineCount = 2;
+    } catch (e) {
+      // fallback to simple length heuristic
+      lineCount = (option.label || "").length > 52 ? 2 : 1;
+    }
+
+    const primaryBlock = document.createElement("span");
+    primaryBlock.className = "answer-placeholder-block";
+    const primaryWidth = Math.floor(Math.random() * 24) + 46; // 46% a 69%
+    primaryBlock.style.width = `${primaryWidth}%`;
+    placeholders.appendChild(primaryBlock);
+
+    if (lineCount > 1) {
+      const secondaryBlock = document.createElement("span");
+      secondaryBlock.className = "answer-placeholder-block answer-placeholder-block-secondary";
+      const secondaryWidth = Math.floor(Math.random() * 22) + 30; // 30% a 51%
+      secondaryBlock.style.width = `${secondaryWidth}%`;
+      placeholders.appendChild(secondaryBlock);
+    }
 
     const text = document.createElement("span");
+    text.className = "answer-text";
     text.textContent = option.label;
     text.dataset.label = option.label;
 
+    content.appendChild(placeholders);
+    content.appendChild(text);
     label.appendChild(input);
-    label.appendChild(text);
+    label.appendChild(content);
     questionForm.appendChild(label);
   });
 
@@ -1927,7 +2316,7 @@ function renderQuestion() {
       const hoveredOption = e.target.closest(".answer-option");
 
       Array.from(questionForm.children).forEach((el) => {
-        const textEl = el.querySelector("span");
+        const textEl = el.querySelector(".answer-text");
         if (!textEl) {
           return;
         }
@@ -1948,7 +2337,7 @@ function renderQuestion() {
     questionForm.addEventListener("mousemove", questionForm._maskHandler);
     questionForm.addEventListener("mouseleave", function () {
       Array.from(questionForm.children).forEach((el) => {
-        const textEl = el.querySelector("span");
+        const textEl = el.querySelector(".answer-text");
         if (textEl) {
           textEl.style.setProperty("--reveal-x", "-9999px");
           textEl.style.setProperty("--reveal-y", "-9999px");
@@ -1980,7 +2369,7 @@ function evaluateQuiz(quiz) {
   return { earnedPoints, maxPoints, percent };
 }
 
-function finishQuiz() {
+async function finishQuiz() {
   const quiz = getSelectedQuiz();
   if (!quiz) {
     return;
@@ -1993,32 +2382,98 @@ function finishQuiz() {
   clearViolationTimers();
   hidePolicyWarning();
 
-  const { earnedPoints, maxPoints, percent } = evaluateQuiz(quiz);
-  const result = {
-    quizId: quiz.id,
-    quizTitle: quiz.title,
-    studentName: state.studentName,
-    earnedPoints,
-    maxPoints,
-    percent,
-    date: new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" })
-  };
+  const answersSnapshot = cloneAnswersSnapshot();
+  const at = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+
+  let result;
+  let questionResults = [];
+  let usedSecureGrading = false;
+  try {
+    const graded = await gradeQuizAttemptSecure(quiz, answersSnapshot, at);
+    result = graded.result;
+    questionResults = graded.questionResults;
+    usedSecureGrading = true;
+  } catch (error) {
+    console.error("Correção segura indisponível, usando fallback local:", error);
+    const fallback = evaluateQuiz(quiz);
+    result = {
+      quizId: quiz.id,
+      quizTitle: quiz.title,
+      studentName: state.studentName,
+      earnedPoints: fallback.earnedPoints,
+      maxPoints: fallback.maxPoints,
+      percent: fallback.percent,
+      date: at,
+      questionResults: []
+    };
+  }
+
+  result.questionResults = questionResults;
 
   saveStoredAttempt(quiz.id, {
     status: "completed",
     result,
-    answers: state.answers
+    answers: answersSnapshot,
+    questionResults
   });
 
-  saveAttemptToFirestore(quiz, result, state.answers);
-  showResult(result, "Tire uma captura desta tela e envie conforme orientação do professor.");
+  if (!usedSecureGrading) {
+    saveAttemptToFirestore(quiz, result, answersSnapshot, questionResults);
+  }
+  const baseMessage = result.earnedPoints === result.maxPoints
+    ? "Parabéns, você gabaritou todas as questões!"
+    : "Resultado registrado com sucesso.";
+  showResult(result, baseMessage);
+  updateReviewButtons(quiz, { status: "completed", result, answers: answersSnapshot, questionResults });
 }
 
 function showResult(result, detailsText) {
   resultStudentName.textContent = result.studentName;
   resultScore.textContent = `${result.earnedPoints} / ${result.maxPoints}`;
   resultPercent.textContent = `${result.percent}% de acertos`;
-  resultDetails.textContent = detailsText;
+  const quiz = getSelectedQuiz();
+
+  const prevDisabled = document.getElementById("result-review-disabled");
+  if (prevDisabled && prevDisabled.parentNode) {
+    prevDisabled.parentNode.removeChild(prevDisabled);
+  }
+
+  const existingNote = document.getElementById("result-blocked-note");
+  if (existingNote) {
+    existingNote.remove();
+  }
+
+  resultDetails.textContent = detailsText || "";
+
+  if (quiz && !quiz.allowStudentReview) {
+    const note = document.createElement("p");
+    note.id = "result-blocked-note";
+    note.className = "result-blocked-note";
+    note.textContent = "Resumo bloqueado no momento.";
+    resultDetails.parentNode.appendChild(note);
+
+    if (resultBackHomeButton && resultBackHomeButton.parentNode) {
+      const disabledBtn = document.createElement("button");
+      disabledBtn.type = "button";
+      disabledBtn.id = "result-review-disabled";
+      disabledBtn.className = "btn btn-disabled-gray";
+      disabledBtn.disabled = true;
+      disabledBtn.textContent = "Ver resumo";
+      resultBackHomeButton.parentNode.insertBefore(disabledBtn, resultBackHomeButton);
+    }
+  }
+
+  const existingRetakeNote = document.getElementById("result-retake-note");
+  if (existingRetakeNote) existingRetakeNote.remove();
+
+  if (quiz && isRetakeReleased(quiz.id)) {
+    const retakeNote = document.createElement("p");
+    retakeNote.id = "result-retake-note";
+    retakeNote.className = "result-retake-note";
+    retakeNote.textContent = "Novo questionário liberado! Volte à home para iniciar uma nova tentativa.";
+    resultDetails.parentNode.appendChild(retakeNote);
+  }
+
   showOnlyScreen("result");
 }
 
@@ -2030,6 +2485,8 @@ function cancelQuiz(reason, options = {}) {
 
   const blockedByViolation = Boolean(options.blockedByViolation);
   const cancelAt = new Date().toLocaleString("pt-BR", { timeZone: "America/Sao_Paulo" });
+  const answersSnapshot = cloneAnswersSnapshot();
+  const result = buildAttemptResult(quiz, answersSnapshot, cancelAt);
 
   state.isActive = false;
   state.isCancelled = true;
@@ -2044,13 +2501,17 @@ function cancelQuiz(reason, options = {}) {
     status: "cancelled",
     cancelReason: reason,
     blockedByViolation,
-    at: cancelAt
+    at: cancelAt,
+    result,
+    answers: answersSnapshot
   });
 
   saveCancelledAttemptToFirestore(quiz, {
     reason,
     blockedByViolation,
-    at: cancelAt
+    at: cancelAt,
+    result,
+    answers: answersSnapshot
   });
 
   if (options.skipScreen) {
@@ -2059,6 +2520,7 @@ function cancelQuiz(reason, options = {}) {
 
   cancelMessage.textContent = reason;
   showOnlyScreen("cancel");
+  updateReviewButtons(quiz, { status: "cancelled", result, answers: answersSnapshot });
 }
 
 function saveCancelledAttemptToFirestore(quiz, cancellation) {
@@ -2090,14 +2552,14 @@ function saveCancelledAttemptToFirestore(quiz, cancellation) {
     quizId: quiz.id,
     quizTitulo: quiz.title,
     nome: state.studentName || "",
-    pontos: 0,
-    total: quiz.questions.length,
-    percentual: 0,
+    pontos: cancellation.result?.earnedPoints ?? 0,
+    total: cancellation.result?.maxPoints ?? quiz.questions.length,
+    percentual: cancellation.result?.percent ?? 0,
     data: cancellation.at,
     status: "cancelled",
     bloqueadoPorViolacao: Boolean(cancellation.blockedByViolation),
     motivoCancelamento: cancellation.reason,
-    respostas: state.answers
+    respostas: cancellation.answers || {}
   };
 
   Promise.all([
@@ -2119,12 +2581,12 @@ function saveCancelledAttemptToFirestore(quiz, cancellation) {
         quizId: quiz.id,
         quizTitle: quiz.title,
         studentName: state.studentName || "",
-        earnedPoints: 0,
-        maxPoints: quiz.questions.length,
-        percent: 0,
+        earnedPoints: cancellation.result?.earnedPoints ?? 0,
+        maxPoints: cancellation.result?.maxPoints ?? quiz.questions.length,
+        percent: cancellation.result?.percent ?? 0,
         date: cancellation.at
       },
-      answers: state.answers
+      answers: cancellation.answers || {}
     };
     state.remoteAttemptsLoaded = true;
     renderHome();
@@ -2133,7 +2595,7 @@ function saveCancelledAttemptToFirestore(quiz, cancellation) {
   });
 }
 
-function saveAttemptToFirestore(quiz, result, answers) {
+function saveAttemptToFirestore(quiz, result, answers, questionResults = []) {
   if (!window.firebaseDB || !window.firebaseSetDoc || !window.firebaseDoc) {
     return;
   }
@@ -2172,7 +2634,8 @@ function saveAttemptToFirestore(quiz, result, answers) {
     status: "completed",
     bloqueadoPorViolacao: false,
     motivoCancelamento: "",
-    respostas: answers
+    respostas: answers,
+    correcaoQuestoes: Array.isArray(questionResults) ? questionResults : []
   };
 
   Promise.all([
@@ -2195,7 +2658,7 @@ function isFullscreenActive() {
 }
 
 function handlePolicyViolation() {
-  if (!state.isActive || state.isViolationGraceActive) {
+  if (!state.isActive || state.isTeacher || state.isViolationGraceActive) {
     return;
   }
 
@@ -2323,44 +2786,3 @@ function clearValidationMessage() {
   }
 }
 
-async function saveResultCapture() {
-  if (typeof html2canvas !== "function") {
-    alert("Não foi possível gerar a captura nesta tentativa.");
-    return;
-  }
-
-  captureButton.disabled = true;
-  captureButton.textContent = "Gerando captura...";
-  screens.result.classList.add("capture-mode");
-
-  try {
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-
-    const canvas = await html2canvas(screens.result, {
-      scale: Math.max(2, window.devicePixelRatio || 1),
-      backgroundColor: "#ffffff",
-      useCORS: true,
-      logging: false
-    });
-
-    const link = document.createElement("a");
-    const safeName = state.studentName
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .replace(/[^a-zA-Z0-9-_ ]/g, "")
-      .trim()
-      .replace(/\s+/g, "_")
-      .toLowerCase();
-
-    link.download = `resultado_quiz_${safeName || "aluno"}.png`;
-    link.href = canvas.toDataURL("image/png");
-    link.click();
-  } catch (error) {
-    console.error(error);
-    alert("Erro ao salvar a captura. Tente novamente.");
-  } finally {
-    screens.result.classList.remove("capture-mode");
-    captureButton.disabled = false;
-    captureButton.textContent = "Salvar captura do resultado";
-  }
-}
