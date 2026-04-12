@@ -14,6 +14,14 @@ jobs:
       - name: Criar config-local.js com chave secreta
         run: echo "window.__APP_FIREBASE_API_KEY__ = '${{ secrets.FIREBASE_API_KEY }}';" > ./config-local.js
 
+      - name: Debug: listar arquivos e mostrar config-local.js
+        run: |
+          echo "PWD: $(pwd)"
+          echo "Files:"
+          ls -la
+          echo "\n-- config-local.js (first 5 lines) --"
+          sed -n '1,5p' ./config-local.js || true
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
