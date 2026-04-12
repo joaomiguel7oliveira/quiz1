@@ -1,0 +1,2 @@
+- name: Criar config-local.js com chave secreta
+  run: echo "window.__APP_FIREBASE_API_KEY__ = '${{ secrets.FIREBASE_API_KEY }}';" > ./config-local.js
