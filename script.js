@@ -4255,18 +4255,28 @@ function setStoredAttemptCount(quizId, value) {
 }
 
 function getKnownAttempt(quizId) {
+  const localAttempt = getStoredAttempt(quizId);
+
   // Sempre prioriza o estado remoto, se carregado
   if (state.remoteAttemptsLoaded) {
+    const remoteAttempt = state.remoteAttemptsByQuiz[quizId] || null;
+
+    // Evita regressao: se o local for mais novo que o remoto, mantém o local.
+    if (isAttemptNewer(localAttempt, remoteAttempt)) {
+      state.remoteAttemptsByQuiz[quizId] = localAttempt;
+      return localAttempt;
+    }
+
     // Se não existe tentativa remota, remove localStorage para garantir sincronização
-    if (!state.remoteAttemptsByQuiz[quizId]) {
+    if (!remoteAttempt) {
       localStorage.removeItem(getStorageKey(quizId));
       setStoredAttemptCount(quizId, Number(state.remoteAttemptCountsByQuiz?.[quizId] || 0));
       return null;
     }
-    return state.remoteAttemptsByQuiz[quizId];
+    return remoteAttempt;
   }
+
   // Se não carregou remoto ainda, usa local
-  const localAttempt = getStoredAttempt(quizId);
   return localAttempt || null;
 }
 
@@ -4427,10 +4437,20 @@ async function syncLatestAttemptForQuiz(quizId) {
     return null;
   }
 
+  const localAttempt = getStoredAttempt(quizId);
   const remoteAttempt = await getRemoteAttemptForQuiz(quizId);
-  if (remoteAttempt) {
+
+  // Só sobrescreve local quando remoto realmente for mais novo.
+  if (remoteAttempt && !isAttemptNewer(localAttempt, remoteAttempt)) {
     saveStoredAttempt(quizId, remoteAttempt);
     return remoteAttempt;
+  }
+
+  if (localAttempt) {
+    if (state.remoteAttemptsLoaded && isAttemptNewer(localAttempt, state.remoteAttemptsByQuiz[quizId])) {
+      state.remoteAttemptsByQuiz[quizId] = localAttempt;
+    }
+    return localAttempt;
   }
 
   return getKnownAttempt(quizId);
@@ -6226,6 +6246,15 @@ async function refreshRemoteAttempts(options = {}) {
         answers: data.respostas || {},
         questionResults: data.correcaoQuestoes || []
       };
+    });
+
+    // Evita regressao visual: mantém tentativa local caso ela seja mais nova que a remota.
+    getAllQuizzes().forEach((quiz) => {
+      const localAttempt = getStoredAttempt(quiz.id);
+      const remoteAttempt = nextMap[quiz.id] || null;
+      if (isAttemptNewer(localAttempt, remoteAttempt)) {
+        nextMap[quiz.id] = localAttempt;
+      }
     });
 
     state.remoteAttemptsByQuiz = nextMap;
