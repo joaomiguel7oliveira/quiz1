@@ -2508,6 +2508,73 @@ function parsePtBrDate(dateString) {
   return new Date(year, month, day, hour, minute, second).getTime();
 }
 
+function parseIsoDate(value) {
+  const ts = Date.parse(String(value || ""));
+  return Number.isFinite(ts) ? ts : 0;
+}
+
+function getAttemptRecencyTimestamp(attempt) {
+  if (!attempt || typeof attempt !== "object") {
+    return 0;
+  }
+
+  const endedAt = parsePtBrDate(
+    attempt.fimAvaliacao
+    || attempt.endedAt
+    || attempt?.result?.endedAt
+    || ""
+  );
+  const recordedAt = parsePtBrDate(
+    attempt.data
+    || attempt.date
+    || attempt?.result?.date
+    || ""
+  );
+  const startedAt = parsePtBrDate(
+    attempt.inicioAvaliacao
+    || attempt.startedAt
+    || attempt?.result?.startedAt
+    || ""
+  );
+  const updatedAt = parseIsoDate(
+    attempt.atualizadoEmIso
+    || attempt.updatedAtIso
+    || attempt.criadoEmIso
+    || attempt.createdAtIso
+    || ""
+  );
+
+  return Math.max(endedAt, recordedAt, startedAt, updatedAt, 0);
+}
+
+function compareAttemptRecency(left, right) {
+  const leftTs = getAttemptRecencyTimestamp(left);
+  const rightTs = getAttemptRecencyTimestamp(right);
+  if (leftTs !== rightTs) {
+    return leftTs - rightTs;
+  }
+
+  const leftUpdated = parseIsoDate(left?.atualizadoEmIso || left?.updatedAtIso || left?.criadoEmIso || left?.createdAtIso || "");
+  const rightUpdated = parseIsoDate(right?.atualizadoEmIso || right?.updatedAtIso || right?.criadoEmIso || right?.createdAtIso || "");
+  if (leftUpdated !== rightUpdated) {
+    return leftUpdated - rightUpdated;
+  }
+
+  const leftId = String(left?.id || "");
+  const rightId = String(right?.id || "");
+  return leftId.localeCompare(rightId, "pt-BR");
+}
+
+function isAttemptNewer(candidate, current) {
+  if (!candidate) {
+    return false;
+  }
+  if (!current) {
+    return true;
+  }
+  return compareAttemptRecency(candidate, current) > 0;
+}
+
 function computeAttemptDurationSeconds(startMs, endMs = Date.now()) {
   const start = Number(startMs || 0);
   const end = Number(endMs || 0);
@@ -2555,13 +2622,7 @@ function getLatestAttemptsByQuiz(attempts) {
   const latestMap = {};
   attempts.forEach((attempt) => {
     const current = latestMap[attempt.quizId];
-    if (!current) {
-      latestMap[attempt.quizId] = attempt;
-      return;
-    }
-    const currentTs = parsePtBrDate(current.data);
-    const nextTs = parsePtBrDate(attempt.data);
-    if (nextTs >= currentTs) {
+    if (isAttemptNewer(attempt, current)) {
       latestMap[attempt.quizId] = attempt;
     }
   });
@@ -2627,8 +2688,8 @@ async function loadLatestAttemptBySlugQuiz(slug, quizId) {
 
     let latest = null;
     snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      if (!latest || parsePtBrDate(data.data || "") >= parsePtBrDate(latest.data || "")) {
+      const data = { id: docSnap.id, ...docSnap.data() };
+      if (isAttemptNewer(data, latest)) {
         latest = data;
       }
     });
@@ -2638,6 +2699,9 @@ async function loadLatestAttemptBySlugQuiz(slug, quizId) {
     }
 
     return {
+      id: latest.id || "",
+      updatedAtIso: String(latest.atualizadoEmIso || ""),
+      createdAtIso: String(latest.criadoEmIso || ""),
       status: latest.status || "completed",
       cancelReason: latest.motivoCancelamento || "",
       blockedByViolation: Boolean(latest.bloqueadoPorViolacao),
@@ -5890,14 +5954,13 @@ async function persistFocusWaitPenaltyToFirestore(quizId, penalty) {
   }
 
   let latestDoc = null;
-  let latestTs = -1;
+  let latestAttempt = null;
 
   snap.forEach((docSnap) => {
-    const data = docSnap.data() || {};
-    const ts = parsePtBrDate(String(data.data || ""));
-    if (!latestDoc || ts >= latestTs) {
+    const data = { id: docSnap.id, ...docSnap.data() };
+    if (isAttemptNewer(data, latestAttempt)) {
       latestDoc = docSnap;
-      latestTs = ts;
+      latestAttempt = data;
     }
   });
 
@@ -6121,7 +6184,7 @@ async function refreshRemoteAttempts(options = {}) {
     const nextCounts = {};
 
     snap.forEach((docSnap) => {
-      const data = docSnap.data();
+      const data = { id: docSnap.id, ...docSnap.data() };
       if (!data?.quizId) {
         return;
       }
@@ -6129,13 +6192,14 @@ async function refreshRemoteAttempts(options = {}) {
       nextCounts[data.quizId] = Number(nextCounts[data.quizId] || 0) + 1;
 
       const current = nextMap[data.quizId];
-      const nextTs = parsePtBrDate(data.data || "");
-      const currentTs = current ? parsePtBrDate(current.result?.date || "") : -1;
-      if (current && nextTs < currentTs) {
+      if (current && !isAttemptNewer(data, current)) {
         return;
       }
 
       nextMap[data.quizId] = {
+        id: data.id || "",
+        updatedAtIso: String(data.atualizadoEmIso || ""),
+        createdAtIso: String(data.criadoEmIso || ""),
         status: data.status || "completed",
         cancelReason: data.motivoCancelamento || "",
         blockedByViolation: Boolean(data.bloqueadoPorViolacao),
@@ -6507,8 +6571,8 @@ async function getRemoteAttemptForQuiz(quizId) {
 
     let latest = null;
     snap.forEach((docSnap) => {
-      const data = docSnap.data();
-      if (!latest || parsePtBrDate(data.data || "") >= parsePtBrDate(latest.data || "")) {
+      const data = { id: docSnap.id, ...docSnap.data() };
+      if (isAttemptNewer(data, latest)) {
         latest = data;
       }
     });
@@ -6518,6 +6582,9 @@ async function getRemoteAttemptForQuiz(quizId) {
     }
 
     return {
+      id: latest.id || "",
+      updatedAtIso: String(latest.atualizadoEmIso || ""),
+      createdAtIso: String(latest.criadoEmIso || ""),
       status: latest.status || "completed",
       cancelReason: latest.motivoCancelamento || "",
       blockedByViolation: Boolean(latest.bloqueadoPorViolacao),
@@ -7540,6 +7607,8 @@ async function saveCancelledAttemptToFirestore(quiz, cancellation) {
     atualizadoEmIso: new Date().toISOString()
   };
 
+  const nowIso = new Date().toISOString();
+
   const attemptPayload = {
     uid,
     quizId: quiz.id,
@@ -7561,7 +7630,9 @@ async function saveCancelledAttemptToFirestore(quiz, cancellation) {
     penalidadeSaidaFocoEm: "",
     processoControleFoco: FOCUS_WAIT_PROCESS_NAME,
     respostas: answersSnapshot,
-    correcaoQuestoes: Array.isArray(questionResults) ? questionResults : []
+    correcaoQuestoes: Array.isArray(questionResults) ? questionResults : [],
+    criadoEmIso: nowIso,
+    atualizadoEmIso: nowIso
   };
 
   await Promise.all([
@@ -7577,6 +7648,8 @@ async function saveCancelledAttemptToFirestore(quiz, cancellation) {
   ]);
 
   state.remoteAttemptsByQuiz[quiz.id] = {
+    updatedAtIso: nowIso,
+    createdAtIso: nowIso,
     status: "cancelled",
     cancelReason: cancellation.reason,
     blockedByViolation: Boolean(cancellation.blockedByViolation),
@@ -7635,6 +7708,8 @@ function saveAttemptToFirestore(quiz, result, answers, questionResults = []) {
     atualizadoEmIso: new Date().toISOString()
   };
 
+  const nowIso = new Date().toISOString();
+
   const attemptPayload = {
     uid,
     quizId: quiz.id,
@@ -7656,7 +7731,9 @@ function saveAttemptToFirestore(quiz, result, answers, questionResults = []) {
     penalidadeSaidaFocoEm: String(result.focusExitPenaltyAt || ""),
     processoControleFoco: FOCUS_WAIT_PROCESS_NAME,
     respostas: answers,
-    correcaoQuestoes: Array.isArray(questionResults) ? questionResults : []
+    correcaoQuestoes: Array.isArray(questionResults) ? questionResults : [],
+    criadoEmIso: nowIso,
+    atualizadoEmIso: nowIso
   };
 
   Promise.all([
